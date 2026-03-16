@@ -14,7 +14,7 @@ export function useKeyResults(objectiveId?: string) {
       .from('key_results')
       .select(`
         *,
-        profiles!key_results_owner_id_fkey(full_name)
+        owner:profiles(full_name)
       `)
       .order('created_at', { ascending: true });
 
@@ -45,7 +45,7 @@ export function useKeyResults(objectiveId?: string) {
         lastCheckIn: item.last_check_in,
         createdAt: item.created_at,
         updatedAt: item.updated_at,
-        ownerName: item.profiles?.full_name
+        ownerName: item.owner?.full_name
       }));
       setKeyResults(mapped);
     }

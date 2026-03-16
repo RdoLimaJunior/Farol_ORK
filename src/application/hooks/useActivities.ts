@@ -29,7 +29,7 @@ export function useActivities() {
         previous_value,
         update_date,
         comment,
-        owner:profiles!kr_updates_owner_id_fkey (
+        owner:profiles (
           full_name,
           avatar_url
         ),

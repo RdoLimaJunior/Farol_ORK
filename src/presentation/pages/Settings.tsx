@@ -14,10 +14,13 @@ import {
   IconSettings, 
   IconPalette, 
   IconShieldLock, 
-  IconNotification,
   IconChevronRight,
   IconDatabase,
-  IconRocket
+  IconRocket,
+  IconUsers,
+  IconCalendar,
+  IconTournament,
+  IconKey
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../application/context/AuthContext';
@@ -53,8 +56,40 @@ export default function Settings() {
 
   const settingsItems = [
     { 
-      title: 'Design System', 
-      description: 'Explore os componentes e tokens visuais do FAROL.', 
+      title: 'Membros e Times', 
+      description: 'Gerencie usuários, departamentos e convites de membros.', 
+      icon: IconUsers, 
+      color: 'cyan', 
+      path: '/members',
+      adminOnly: true
+    },
+    { 
+      title: 'Ciclos de OKR', 
+      description: 'Configure trimestres, anos fiscais e períodos de vigência.', 
+      icon: IconCalendar, 
+      color: 'teal', 
+      path: '/settings/cycles',
+      adminOnly: true
+    },
+    { 
+      title: 'Níveis e Permissões', 
+      description: 'Defina o que cada papel (Admin/Membro) pode ver e editar.', 
+      icon: IconKey, 
+      color: 'grape', 
+      path: '/settings/permissions',
+      adminOnly: true
+    },
+    { 
+      title: 'Estrutura Organizacional', 
+      description: 'Gerencie o organograma, áreas e sub-departamentos.', 
+      icon: IconTournament, 
+      color: 'blue', 
+      path: '/settings/structure',
+      adminOnly: true
+    },
+    { 
+      title: 'Identidade Visual', 
+      description: 'Configure logotipos, cores e tokens da plataforma.', 
       icon: IconPalette, 
       color: 'violet', 
       path: '/design-system',
@@ -62,17 +97,9 @@ export default function Settings() {
     },
     { 
       title: 'Segurança', 
-      description: 'Gerencie autenticação de dois fatores e senhas.', 
+      description: 'Autenticação de dois fatores, senhas e auditoria.', 
       icon: IconShieldLock, 
-      color: 'blue', 
-      path: '#',
-      adminOnly: false
-    },
-    { 
-      title: 'Notificações', 
-      description: 'Configure alertas de check-in e prazos de OKR.', 
-      icon: IconNotification, 
-      color: 'orange', 
+      color: 'red', 
       path: '#',
       adminOnly: false
     },

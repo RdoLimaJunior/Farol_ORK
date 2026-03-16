@@ -17,7 +17,16 @@ import {
   IconRocket,
   IconArrowUpRight,
   IconSun,
-  IconMoonStars
+  IconMoonStars,
+  IconCompass,
+  IconChartBar,
+  IconListCheck,
+  IconActivity,
+  IconRefresh,
+  IconMessageDots,
+  IconHeart,
+  IconAdjustments,
+  IconClipboardData
 } from '@tabler/icons-react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { spotlight } from '@mantine/spotlight';
@@ -44,27 +53,34 @@ export function AppLayout() {
 
   const navGroups = [
     {
-      label: 'GESTÃO ESTRATÉGICA',
-      links: [
-        { icon: IconRocket, label: 'Início', path: '/' },
-        { icon: IconDashboard, label: 'Visão Geral', path: '/overview' },
-        { icon: IconTrophy, label: 'Estratégicos', path: '/strategy' },
-        { icon: IconTournament, label: 'Táticos', path: '/tactical' },
-        { icon: IconUserCircle, label: 'Meus OKRs', path: '/individual' },
-      ]
-    },
-    {
       label: 'OPERAÇÃO',
       links: [
-        { icon: IconListDetails, label: 'Execução', path: '/execution' },
-        { icon: IconHeartHandshake, label: 'Cultura', path: '/engagement', badge: 'NEW' },
+        { icon: IconCompass, label: 'Timoneiro', path: '/' },
+        { icon: IconChartBar, label: 'Visão Geral', path: '/overview' },
+        { icon: IconUserCircle, label: 'Meus OKRs', path: '/individual' },
+        { icon: IconListCheck, label: 'Planos de Ação', path: '/execution' },
       ]
     },
     {
-      label: 'GOVERNANÇA',
-      adminOnly: true,
+      label: 'GESTÃO ESTRATÉGICA',
       links: [
-        { icon: IconUsers, label: 'Membros', path: '/members' },
+        { icon: IconTrophy, label: 'Estratégico', path: '/strategy' },
+        { icon: IconTournament, label: 'Tático', path: '/tactical' },
+        { icon: IconActivity, label: 'Operacional', path: '/execution-overview' },
+      ]
+    },
+    {
+      label: 'MONITORAMENTO & CULTURA',
+      links: [
+        { icon: IconRefresh, label: 'Check-ins', path: '/checkins' },
+        { icon: IconClipboardData, label: 'Visão Geral', path: '/reports' },
+        { icon: IconMessageDots, label: 'Feedbacks', path: '/feedbacks' },
+        { icon: IconHeart, label: 'Cultura', path: '/engagement' },
+      ]
+    },
+    {
+      label: 'SISTEMA',
+      links: [
         { icon: IconSettings, label: 'Configurações', path: '/settings' },
       ]
     }

@@ -16,6 +16,12 @@ import Profile from './presentation/pages/Profile';
 import MembersManagement from './presentation/pages/MembersManagement';
 import SetPassword from './presentation/pages/SetPassword';
 import Settings from './presentation/pages/Settings';
+import Reports from './presentation/pages/Reports';
+import Checkins from './presentation/pages/Checkins';
+import Analytics from './presentation/pages/Analytics';
+import ActionPlans from './presentation/pages/ActionPlans';
+import CyclesManagement from './presentation/pages/CyclesManagement';
+import PermissionsManagement from './presentation/pages/PermissionsManagement';
 import { IconTrophy, IconTournament, IconUserCircle } from '@tabler/icons-react';
 import { CopilotProvider } from './application/context/CopilotContext';
 
@@ -65,11 +71,18 @@ function App() {
                   description="Contribuições individuais e metas táticas." 
                 />
               } />
-              <Route path="/execution" element={<Execution />} />
+              <Route path="/execution" element={<ActionPlans />} />
+              <Route path="/execution-overview" element={<Execution />} />
+              <Route path="/checkins" element={<Checkins />} />
+              <Route path="/feedbacks" element={<Analytics />} />
+              <Route path="/reports" element={<Reports />} />
               <Route path="/engagement" element={<Engagement />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/members" element={<MembersManagement />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/cycles" element={<CyclesManagement />} />
+              <Route path="/settings/permissions" element={<PermissionsManagement />} />
+              <Route path="/settings/structure" element={<Execution />} />
               <Route path="/design-system" element={<DesignSystem />} />
             </Route>
 

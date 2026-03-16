@@ -1,4 +1,4 @@
-﻿# Farol_ORK Development Guidelines
+# Farol_ORK Development Guidelines
 
 Auto-generated from all feature plans. Last updated: 2026-03-16
 
@@ -27,6 +27,7 @@ npm test; npm run lint
 TypeScript 5.0+, React 18.2: Follow standard conventions
 
 ## Recent Changes
+- 013-reformulacao-navegacao: Reformulação completa do menu lateral em 4 pilares (Operação, Gestão Estratégica, Monitoramento & Cultura, Sistema) para melhor hierarquia e usabilidade.
 - 004-design-system-audit: Added TypeScript 5.0+, React 18.2 + @mantine/core, @mantine/hooks, framer-motion, @tabler/icons-react
 - 002-edit-okr-updates: Added TypeScript 5.0+, React 18.2 + @mantine/core, @mantine/hooks, @mantine/modals, lucide-react (or tabler icons)
 

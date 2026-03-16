@@ -1,10 +1,16 @@
-import { TextInput, Paper, Text, Group, Kbd, rem, ActionIcon } from '@mantine/core';
-import { IconSparkles, IconCommand, IconArrowUp } from '@tabler/icons-react';
+import { TextInput, Paper, Text, Group, Kbd, rem, ActionIcon, Loader, Stack, Transition, ThemeIcon, Button } from '@mantine/core';
+import { IconSparkles, IconCommand, IconArrowUp, IconSparkles as IconAI } from '@tabler/icons-react';
 import { motion } from 'framer-motion';
 import { useCopilot } from '../../application/context/CopilotContext';
 
 export function SmartPrompt() {
-  const { promptValue, setPromptValue } = useCopilot();
+  const { promptValue, setPromptValue, currentSuggestion, loading, executeCommand } = useCopilot();
+
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' && promptValue) {
+      executeCommand(promptValue);
+    }
+  };
 
   return (
     <motion.div
@@ -32,6 +38,7 @@ export function SmartPrompt() {
           variant="unstyled"
           value={promptValue}
           onChange={(e) => setPromptValue(e.currentTarget.value)}
+          onKeyDown={handleKeyDown}
           styles={{
             input: {
               fontSize: rem(20),
@@ -42,6 +49,7 @@ export function SmartPrompt() {
             }
           }}
           leftSection={
+             loading ? <Loader size="sm" /> :
              <IconSparkles 
                size={24} 
                style={{ marginLeft: rem(15), color: 'var(--mantine-color-farol-blue-6)' }} 
@@ -58,7 +66,9 @@ export function SmartPrompt() {
                 color="farol-blue" 
                 radius="xl" 
                 size="lg"
-                onClick={() => console.log('Sending command:', promptValue)}
+                onClick={() => executeCommand(promptValue)}
+                disabled={!promptValue || loading}
+                loading={loading}
                 style={{ boxShadow: '0 4px 10px rgba(3, 169, 244, 0.3)' }}
               >
                 <IconArrowUp size={20} stroke={2.5} />
@@ -68,6 +78,48 @@ export function SmartPrompt() {
           rightSectionWidth={130}
         />
       </Paper>
+
+      <Transition mounted={!!currentSuggestion} transition="pop-top-left" duration={200} timingFunction="ease">
+        {(styles) => (
+          <Paper 
+            withBorder 
+            p="md" 
+            radius="lg" 
+            mt="xs" 
+            style={{ 
+              ...styles,
+              maxWidth: rem(800), 
+              margin: '10px auto 0',
+              zIndex: 10,
+              boxShadow: '0 15px 30px rgba(0,0,0,0.15)',
+              borderBottom: '3px solid var(--mantine-color-farol-blue-6)'
+            }}
+          >
+            <Stack gap="xs">
+              <Group justify="space-between" align="flex-start" wrap="nowrap">
+                <Group gap="sm" align="flex-start" wrap="nowrap">
+                  <ThemeIcon color="farol-blue" variant="light" size="lg" radius="md">
+                    <IconAI size={20} />
+                  </ThemeIcon>
+                  <Stack gap={0}>
+                    <Text fw={700} size="sm">{currentSuggestion?.text}</Text>
+                    <Text size="xs" c="dimmed">{currentSuggestion?.explanation}</Text>
+                  </Stack>
+                </Group>
+                <Button 
+                  size="compact-xs" 
+                  variant="light" 
+                  color="farol-blue" 
+                  radius="xl"
+                  onClick={() => currentSuggestion && executeCommand(currentSuggestion.text)}
+                >
+                  Confirmar
+                </Button>
+              </Group>
+            </Stack>
+          </Paper>
+        )}
+      </Transition>
       
       <Group justify="center" mt="md">
          <Text size="xs" c="dimmed" fw={600} style={{ display: 'flex', alignItems: 'center', gap: rem(4) }}>
