@@ -1,50 +1,53 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Plataforma FAROL Constitution
+
+## Visão do Produto
+Criar a plataforma FAROL, um sistema completo de gestão estratégica via OKRs que centraliza a inteligência estratégica e a governança operacional.
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. SDD-First (NON-NEGOTIABLE)
+O desenvolvimento deve seguir estritamente o framework Spec Kit (Specify -> Plan -> Tasks -> Implement). Improvisos e "vibe coding" são proibidos para garantir a previsibilidade e qualidade da IA.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. IA Estratégica Assistida
+A IA não apenas gera dados, mas avalia e recomenda melhorias em OKRs, garantindo que a estratégia seja acionável e mensurável.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Saas-Ready Architecture
+Desde o dia 1, o código deve ser estruturado de forma modular e desacoplada, visando uma futura transição para um modelo multi-tenant (comercial).
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Governança e Auditabilidade
+Transparência total em mudanças de OKRs, com histórico estruturado, RBAC (Role Based Access Control) e trilhas de auditoria para garantir a confiabilidade dos dados.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Orientação a Resultados (Foco em Key Results)
+Todo esforço técnico deve ser validado contra o impacto na confiabilidade e adesão ao processo de OKRs da empresa.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Escopo do MVP
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IN (Dentro do Escopo)
+- Gestão de Objetivos, KRs e Monitoramentos.
+- Iniciativas e Ações vinculadas à estratégia.
+- Dashboard Executivo básico.
+- IA Nível 1 (Criação e Avaliação básica).
+- Gamificação e Social Feed iniciais.
+- Centro de Custo básico.
+- Integração leve com Azure DevOps e Excel/CSV.
+- API REST fundamental.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### OUT (Fora do Escopo)
+- Aplicativo Mobile nativo.
+- Suporte Multiempresa nativo.
+- IA Nível 2/3 (Simulações preditivas avançadas).
+- Integração profunda com ERP/CRM.
+- Autenticação SSO (Azure AD).
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Restrições e Workflow
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+- **Prazo:** Máximo de 1 mês para entrega do MVP funcional.
+- **Base Técnica:** Azure DevOps como repositório e ferramenta de gestão de ciclo de vida.
+- **Padrão de Qualidade UX:** Toda nova feature deve ter um documento preenchido com base no `ux-discovery-template.md` (englobando Jornada, Heurísticas de Nielsen e Matriz de Riscos) ANTES da elaboração da Especificação SDD.
+- **Qualidade Código:** Validação humana obrigatória ao final de cada fase do Specify.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+## Governança
+Esta Constituição é o documento supremo do projeto. Alterações no escopo ou princípios exigem atualização deste arquivo e re-planejamento das tarefas impactadas.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-03-15 | **Last Amended**: 2026-03-15
+
