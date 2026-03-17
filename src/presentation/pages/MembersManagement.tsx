@@ -55,6 +55,10 @@ export default function MembersManagement() {
   useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
   const handleDeactivate = (member: MemberRow) => {
+    if (profile?.role !== 'admin') {
+      notifications.show({ title: 'Sem permissão', message: 'Apenas administradores podem desativar membros.', color: 'orange' });
+      return;
+    }
     modals.openConfirmModal({
       title: 'Desativar Membro',
       children: <Text size="sm">Tem certeza que deseja desativar <b>{member.full_name}</b>? Ele não poderá mais fazer login.</Text>,
@@ -71,6 +75,10 @@ export default function MembersManagement() {
   };
 
   const handleReactivate = async (member: MemberRow) => {
+    if (profile?.role !== 'admin') {
+      notifications.show({ title: 'Sem permissão', message: 'Apenas administradores podem reativar membros.', color: 'orange' });
+      return;
+    }
     const { error } = await supabase.from('profiles').update({ is_active: true }).eq('id', member.id);
     if (!error) {
       notifications.show({ title: 'Membro reativado ✅', message: `${member.full_name} pode fazer login novamente.`, color: 'green' });

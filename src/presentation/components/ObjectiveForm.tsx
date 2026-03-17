@@ -14,12 +14,14 @@ import {
   Paper,
   ThemeIcon
 } from '@mantine/core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { IconSparkles, IconUserPlus, IconRobot } from '@tabler/icons-react';
 import type { Objective } from '../../domain/models/types';
 import { aiAssistant } from '../../application/services/AiAssistantService';
 import { AiActionIcon } from './AiActionIcon';
 import { useMembers } from '../../application/hooks/useMembers';
+import { supabase } from '../../infrastructure/supabaseClient';
+import { useAuthContext } from '../../application/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ObjectiveFormProps {
@@ -31,8 +33,22 @@ interface ObjectiveFormProps {
 
 export function ObjectiveForm({ initialValues, onSubmit, loading, parentObjectives }: ObjectiveFormProps) {
   const { members } = useMembers();
+  const { profile } = useAuthContext();
   const [aiLoading, setAiLoading] = useState<Record<string, boolean>>({});
   const [suggestedMembers, setSuggestedMembers] = useState<string[]>([]);
+  const [cycleOptions, setCycleOptions] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    if (!profile?.tenantId) return;
+    supabase
+      .from('cycles')
+      .select('id, name')
+      .eq('tenant_id', profile.tenantId)
+      .order('start_date', { ascending: false })
+      .then(({ data }) => {
+        if (data) setCycleOptions(data.map(c => ({ value: c.id, label: c.name })));
+      });
+  }, [profile?.tenantId]);
 
   const form = useForm({
     initialValues: {
@@ -42,7 +58,7 @@ export function ObjectiveForm({ initialValues, onSubmit, loading, parentObjectiv
       stakeholders: [] as string[],
       checkInCadence: initialValues?.checkInCadence || 'monthly',
       isConfidential: initialValues?.isConfidential || false,
-      cycleId: initialValues?.cycleId || '2024-Q1',
+      cycleId: initialValues?.cycleId || null,
       type: initialValues?.type || 'committed',
       level: initialValues?.level || 'organizational',
     },
@@ -227,8 +243,9 @@ export function ObjectiveForm({ initialValues, onSubmit, loading, parentObjectiv
           />
           <Select
             label="Ciclo / Trimestre"
-            data={['2024-Q1', '2024-Q2', '2024-Q3', '2024-Q4']}
-            disabled
+            placeholder="Selecione um ciclo"
+            data={cycleOptions}
+            clearable
             {...form.getInputProps('cycleId')}
           />
         </Group>

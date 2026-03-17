@@ -16,6 +16,7 @@ import { IconCheck, IconTarget, IconMessageDots, IconChartArrows } from '@tabler
 import { useState } from 'react';
 import { notifications } from '@mantine/notifications';
 import { performCheckIn } from '../../application/services/checkinService';
+import { useAuthContext } from '../../application/context/AuthContext';
 
 interface CheckInModalProps {
   opened: boolean;
@@ -33,6 +34,7 @@ interface CheckInModalProps {
 }
 
 export function CheckInModal({ opened, onClose, kr, onSuccess }: CheckInModalProps) {
+  const { profile } = useAuthContext();
   const [loading, setLoading] = useState(false);
 
   const form = useForm({
@@ -47,12 +49,16 @@ export function CheckInModal({ opened, onClose, kr, onSuccess }: CheckInModalPro
   });
 
   const handleSubmit = async (values: typeof form.values) => {
+    if (!profile?.id || !profile?.tenantId) {
+      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
+      return;
+    }
     setLoading(true);
     const result = await performCheckIn({
       kr_id: kr.id,
       objective_id: kr.objective_id,
-      owner_id: kr.owner_id,
-      tenant_id: kr.tenant_id,
+      owner_id: profile.id,
+      tenant_id: profile.tenantId,
       new_value: values.new_value,
       confidence_level: values.confidence_level as any,
       comment: values.comment

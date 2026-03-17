@@ -2,22 +2,24 @@ import { useState, useCallback } from 'react';
 import { supabase } from '../../infrastructure/supabaseClient';
 import type { Objective } from '../../domain/models/types';
 import { notifications } from '@mantine/notifications';
+import { useAuthContext } from '../context/AuthContext';
 
 export function useObjectives() {
+  const { profile } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [objectives, setObjectives] = useState<Objective[]>([]);
 
   const fetchObjectives = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('objectives')
-      .select('*')
-      .order('created_at', { ascending: false });
+
+    let query = supabase.from('objectives').select('*').order('created_at', { ascending: false });
+    if (profile?.tenantId) query = query.eq('tenant_id', profile.tenantId);
+
+    const { data, error } = await query;
 
     if (error) {
       notifications.show({ title: 'Erro', message: error.message, color: 'red' });
     } else {
-      // Map Snake_Case from DB to CamelCase for Domain
       const mapped: Objective[] = (data || []).map(item => ({
         id: item.id,
         tenantId: item.tenant_id,
@@ -30,7 +32,7 @@ export function useObjectives() {
         isConfidential: item.is_confidential,
         type: item.type || 'committed',
         level: item.level || 'organizational',
-        progress: 0, // Calculated in UI/Business logic
+        progress: 0,
         status: item.status,
         createdAt: item.created_at,
         updatedAt: item.updated_at,
@@ -38,31 +40,22 @@ export function useObjectives() {
       setObjectives(mapped);
     }
     setLoading(false);
-  }, []);
+  }, [profile?.tenantId]);
 
   const createObjective = async (values: Partial<Objective>) => {
+    if (!profile?.id || !profile?.tenantId) {
+      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
+      return;
+    }
     setLoading(true);
-    
-    const { data: { user } } = await supabase.auth.getUser();
-    const ownerId = user?.id;
-    if (!ownerId) { setLoading(false); return; }
-
-    // Fetch tenant_id from profile
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('tenant_id')
-      .eq('id', ownerId)
-      .single();
-    const tenantId = profile?.tenant_id;
-    if (!tenantId) { setLoading(false); return; }
 
     const { error } = await supabase.from('objectives').insert([{
-      tenant_id: tenantId,
+      tenant_id: profile.tenantId,
       parent_objective_id: values.parentObjectiveId || null,
       title: values.title,
       description: values.description,
-      cycle_id: values.cycleId || '2024-Q1',
-      owner_id: ownerId,
+      cycle_id: values.cycleId || null,
+      owner_id: profile.id,
       check_in_cadence: values.checkInCadence || 'monthly',
       is_confidential: values.isConfidential || false,
       type: values.type || 'committed',
@@ -80,6 +73,10 @@ export function useObjectives() {
   };
 
   const updateObjective = async (id: string, values: Partial<Objective>) => {
+    if (!profile?.id) {
+      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
+      return;
+    }
     setLoading(true);
     const { error } = await supabase
       .from('objectives')
@@ -103,18 +100,19 @@ export function useObjectives() {
     setLoading(false);
   };
 
-
   const importBatch = async (batch: any[]) => {
+    if (!profile?.id || !profile?.tenantId) {
+      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
+      return;
+    }
     setLoading(true);
-    const tenantId = '00000000-0000-0000-0000-000000000000'; 
-    const ownerId = (await supabase.auth.getUser()).data.user?.id || '00000000-0000-0000-0000-000000000000';
 
     const insertData = batch.map(item => ({
-      tenant_id: tenantId,
+      tenant_id: profile.tenantId,
       parent_objective_id: item.parent_id || null,
       title: item.title,
       description: item.description || '',
-      owner_id: ownerId,
+      owner_id: profile.id,
       status: 'on_track'
     }));
 

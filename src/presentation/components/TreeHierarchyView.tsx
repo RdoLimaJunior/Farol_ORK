@@ -149,7 +149,10 @@ interface TreeHierarchyViewProps {
 }
 
 export function TreeHierarchyView({ objectives }: TreeHierarchyViewProps) {
-  const rootObjectives = objectives.filter(obj => !obj.parentObjectiveId);
+  const objectiveIds = new Set(objectives.map(o => o.id));
+  const rootObjectives = objectives.filter(
+    obj => !obj.parentObjectiveId || !objectiveIds.has(obj.parentObjectiveId)
+  );
 
   if (objectives.length === 0) {
     return (

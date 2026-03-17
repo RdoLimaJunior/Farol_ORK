@@ -8,8 +8,9 @@ export async function seedDemoData() {
   console.log('Starting demo data seeding...');
 
   try {
-    // 0. Get current user to avoid conflicts if necessary
-    const { data: { user } } = await supabase.auth.getUser();
+    // 0. Get current user to avoid overwriting real user (optional — safe to be null in mock mode)
+    const { data: authData } = await supabase.auth.getUser();
+    const user = authData?.user ?? null;
 
     // 1. Create Profiles
     const profileInserts = demoMembers.map(member => ({

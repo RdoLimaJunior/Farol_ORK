@@ -30,8 +30,8 @@ export function useInitiatives() {
       .from('initiatives')
       .select(`
         *,
-        profiles (full_name),
-        key_results (title)
+        profiles!owner_id (full_name),
+        key_results!key_result_id (title)
       `)
       .order('created_at', { ascending: false });
 

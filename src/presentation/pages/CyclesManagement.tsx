@@ -82,6 +82,10 @@ export default function CyclesManagement() {
   };
 
   const handleDelete = async (id: string) => {
+    if (profile?.role !== 'admin') {
+      notifications.show({ title: 'Sem permissão', message: 'Apenas administradores podem excluir ciclos.', color: 'orange' });
+      return;
+    }
     const { error } = await supabase.from('cycles').delete().eq('id', id);
     if (!error) {
       notifications.show({ title: 'Ciclo removido', message: 'O ciclo foi excluído.', color: 'blue' });

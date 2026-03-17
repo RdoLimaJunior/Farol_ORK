@@ -95,7 +95,8 @@ export async function performCheckIn(data: CheckInData) {
     const { data: rawKrs, error: siblingsError } = await supabase
       .from('key_results')
       .select('*')
-      .eq('objective_id', data.objective_id);
+      .eq('objective_id', data.objective_id)
+      .eq('tenant_id', data.tenant_id);
 
     if (siblingsError) throw siblingsError;
 

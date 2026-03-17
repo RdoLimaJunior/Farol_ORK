@@ -27,19 +27,19 @@ export interface UserProfile {
 }
 
 const MOCK_USER: User = {
-  id: 'dev-user-id',
-  email: 'dev@farol.local',
+  id: '12cb15b5-e534-4d49-b3b3-e88b35924ee5',
+  email: 'lima.junior@portfoliotech.com.br',
   app_metadata: {},
-  user_metadata: { full_name: 'Admin Local' },
+  user_metadata: { full_name: 'Lima Junior' },
   aud: 'authenticated',
   created_at: new Date().toISOString(),
 };
 
 const MOCK_PROFILE: UserProfile = {
-  id: 'dev-user-id',
-  tenantId: 'dev-tenant-id',
-  fullName: 'Admin Local',
-  email: 'dev@farol.local',
+  id: '12cb15b5-e534-4d49-b3b3-e88b35924ee5',
+  tenantId: '00000000-0000-0000-0000-000000000001',
+  fullName: 'Lima Junior',
+  email: 'lima.junior@portfoliotech.com.br',
   role: 'admin',
   jobTitle: 'Desenvolvedor Senior',
   department: 'Engenharia',

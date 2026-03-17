@@ -14,7 +14,7 @@ export function useKeyResults(objectiveId?: string) {
       .from('key_results')
       .select(`
         *,
-        owner:profiles(full_name)
+        owner:profiles!owner_id(full_name)
       `)
       .order('created_at', { ascending: true });
 

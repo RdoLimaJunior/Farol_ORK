@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '../../infrastructure/supabaseClient';
 import { notifications } from '@mantine/notifications';
+import { useAuthContext } from '../context/AuthContext';
 
 export interface Activity {
   id: string;
@@ -14,14 +15,15 @@ export interface Activity {
 }
 
 export function useActivities() {
+  const { profile } = useAuthContext();
   const [loading, setLoading] = useState(false);
   const [activities, setActivities] = useState<Activity[]>([]);
 
   const fetchActivities = useCallback(async () => {
     setLoading(true);
-    
+
     // Using explicit FK reference to avoid PostgREST ambiguity
-    const { data, error } = await supabase
+    let query = supabase
       .from('kr_updates')
       .select(`
         id,
@@ -29,16 +31,20 @@ export function useActivities() {
         previous_value,
         update_date,
         comment,
-        owner:profiles (
+        owner:profiles!owner_id (
           full_name,
           avatar_url
         ),
-        kr:key_results (
+        kr:key_results!key_result_id (
           title
         )
       `)
       .order('update_date', { ascending: false })
       .limit(10);
+
+    if (profile?.tenantId) query = query.eq('tenant_id', profile.tenantId);
+
+    const { data, error } = await query;
 
     if (error) {
       console.warn('Relationship fetch failed, attempting fallback query...', error);
@@ -79,7 +85,7 @@ export function useActivities() {
       setActivities(mapped);
     }
     setLoading(false);
-  }, []);
+  }, [profile?.tenantId]);
 
   return {
     activities,
