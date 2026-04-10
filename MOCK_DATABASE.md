@@ -1,6 +1,6 @@
 # 🗄️ Farol OKR - Banco de Dados Mockado (MD-DB)
 
-Este arquivo é a **Verdade Absoluta** do sistema. A hierarquia segue o padrão:
+Este arquivo aqui é a **Verdade Absoluta** do sistema. A hierarquia segue o padrão:
 `Objetivo > KR > (Projeto > Ações) & (FCA)`.
 
 ---
