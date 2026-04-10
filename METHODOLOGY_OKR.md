@@ -1,5 +1,5 @@
 # 🏛️ Constituição de Performance: Metodologia Farol OKR
-**Versão 2.2 - Rigor Acadêmico & Liderança Executiva**
+**Versão 2.2 - Rigor Acadêmico & Liderança Executiva ealgo a mais**
 
 Este documento é a norma suprema para a operação do sistema. Não se trata de uma sugestão, mas da lógica de governança que separa empresas de alta performance de organizações burocráticas.
 
