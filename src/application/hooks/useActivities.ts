@@ -22,6 +22,23 @@ export function useActivities() {
   const fetchActivities = useCallback(async () => {
     setLoading(true);
 
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+      const { MOCK_UPDATES } = await import('../../infrastructure/data/mockData');
+      const mapped: Activity[] = MOCK_UPDATES.map(item => ({
+        id: item.id,
+        userName: item.ownerName || 'Usuário',
+        userAvatar: item.ownerAvatar,
+        action: `Fez check-in: ${item.comment}`,
+        timestamp: item.updateDate,
+        krTitle: 'Ação estratégica',
+        previousValue: item.previousValue,
+        newValue: item.newValue
+      }));
+      setActivities(mapped);
+      setLoading(false);
+      return;
+    }
+
     // Using explicit FK reference to avoid PostgREST ambiguity
     let query = supabase
       .from('kr_updates')

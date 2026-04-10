@@ -38,6 +38,9 @@ export interface KeyResult {
   progress: number;          // Calculated (%)
   polarity: 'ascending' | 'descending';
   status: Status;            // Individual KR status
+   perspective?: 'good' | 'warning' | 'critical';
+   confidence?: string; // Alta, Media, Baixa
+   monthlyValues?: Record<string, number>; // e.g. { 'JAN': 10, 'FEV': 15 }
   lastCheckIn?: string;      // Date of last update
   createdAt: string;
   updatedAt: string;
@@ -68,6 +71,57 @@ export interface CriticalAnalysis {
   analysisData: any;         // Structured JSON
   actionIds: string[];       // Linked corrective actions (Initiatives)
   authorId: string;
+  createdAt: string;
+}
+
+// === Ceremony & Execution (Spec 007) ===
+
+export type SessionType = 'planning' | 'checkin' | 'review' | 'retrospective' | 'sync';
+
+export interface CeremonySession {
+  id: string;
+  tenantId: string;
+  date: string;
+  type: SessionType;
+  participantIds: string[];  // Profiles
+  notes?: string;
+  status: 'draft' | 'completed';
+  createdAt: string;
+}
+
+export interface Initiative {
+  id: string;
+  tenantId: string;
+  keyResultId: string;
+  title: string;
+  description?: string;
+  ownerId: string;
+  status: 'pending' | 'in_progress' | 'completed' | 'blocked';
+  progress: number;
+  startDate?: string;
+  endDate?: string;
+  createdAt: string;
+}
+
+export interface FCA {
+  id: string;
+  tenantId: string;
+  keyResultId: string;
+  fact: string;
+  cause: string; // analysis (e.g. 5 whys)
+  ownerId: string;
+  createdAt: string;
+}
+
+export interface Action {
+  id: string;
+  tenantId: string;
+  parentId: string; // FK -> Initiative OR FCA
+  parentType: 'initiative' | 'fca';
+  title: string;
+  ownerId: string;
+  status: 'todo' | 'doing' | 'done' | 'cancelled' | 'blocked';
+  dueDate?: string;
   createdAt: string;
 }
 

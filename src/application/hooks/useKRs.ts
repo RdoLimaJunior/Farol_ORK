@@ -9,6 +9,14 @@ export function useKRs() {
 
   const fetchKRs = useCallback(async (objectiveId?: string) => {
     setLoading(true);
+
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+      const { MOCK_KRS } = await import('../../infrastructure/data/mockData');
+      setKrs(MOCK_KRS);
+      setLoading(false);
+      return;
+    }
+
     let query = supabase.from('key_results').select('*');
     
     if (objectiveId) {
@@ -33,6 +41,7 @@ export function useKRs() {
         currentValue: item.current_value,
         weight: item.weight || 1,
         progress: 0, // Calculated in UI
+        polarity: item.polarity || 'ascending',
         status: item.status,
         createdAt: item.created_at,
         updatedAt: item.updated_at,

@@ -18,10 +18,9 @@ import { useSearchParams } from 'react-router-dom';
 import { useObjectives } from '../../application/hooks/useObjectives';
 import { useKRs } from '../../application/hooks/useKRs';
 import { useOkrCalculation } from '../../application/hooks/useOkrCalculation';
-import { TreeHierarchyView } from '../components/TreeHierarchyView';
+import { DetailedOkrList } from '../components/DetailedOkrList';
 import { ImportObjectivesModal } from '../components/ImportObjectivesModal';
 import { ObjectiveForm } from '../components/ObjectiveForm';
-import { motion } from 'framer-motion';
 import type { ObjectiveLevel } from '../../domain/models/types';
 import { PageHeader } from '../components/common/PageHeader';
 
@@ -125,13 +124,10 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
               ))}
             </Stack>
           ) : filteredObjectives.length > 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <TreeHierarchyView objectives={filteredObjectives} />
-            </motion.div>
+              <DetailedOkrList 
+                objectives={filteredObjectives} 
+                onAddObjective={openCreate} 
+              />
           ) : (
             <Paper withBorder p={50} radius="md" style={{ borderStyle: 'dashed', textAlign: 'center', backgroundColor: 'transparent' }}>
               <Stack align="center" gap="md">

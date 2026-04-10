@@ -1,21 +1,15 @@
-import { AppShell, Burger, Group, NavLink, Title, Text, Avatar, Menu, UnstyledButton, rem, Box, Badge, Divider, Stack, ThemeIcon, Container } from '@mantine/core';
+import { AppShell, Group, NavLink, Title, Text, Avatar, Menu, UnstyledButton, rem, Box, Badge, Divider, Stack, ThemeIcon, Container } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { 
-  IconDashboard, 
   IconTargetArrow, 
   IconLogout, 
   IconSettings, 
   IconUser,
   IconSearch,
-  IconUsers,
-  IconListDetails,
-  IconHeartHandshake,
   IconSparkles,
   IconTournament,
   IconTrophy,
   IconUserCircle,
-  IconRocket,
-  IconArrowUpRight,
   IconSun,
   IconMoonStars,
   IconCompass,
@@ -25,8 +19,10 @@ import {
   IconRefresh,
   IconMessageDots,
   IconHeart,
-  IconAdjustments,
-  IconClipboardData
+  IconClipboardData,
+  IconCalendarEvent,
+  IconLayoutSidebarLeftCollapse,
+  IconLayoutSidebarLeftExpand
 } from '@tabler/icons-react';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { spotlight } from '@mantine/spotlight';
@@ -57,6 +53,7 @@ export function AppLayout() {
       links: [
         { icon: IconCompass, label: 'Timoneiro', path: '/' },
         { icon: IconChartBar, label: 'Visão Geral', path: '/overview' },
+        { icon: IconCalendarEvent, label: 'Ritual de Check-in Executivo', path: '/ceremony' },
         { icon: IconUserCircle, label: 'Meus OKRs', path: '/individual' },
         { icon: IconListCheck, label: 'Planos de Ação', path: '/execution' },
       ]
@@ -92,18 +89,27 @@ export function AppLayout() {
       navbar={{
         width: 280,
         breakpoint: 'sm',
-        collapsed: { mobile: !opened },
+        collapsed: { mobile: !opened, desktop: !opened },
       }}
       padding="md"
     >
       <AppShell.Header style={{ borderBottom: '1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))' }}>
         <Group h="100%" px="xl" justify="space-between">
           <Group gap="xl">
-            <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+            <ActionIcon 
+              variant="subtle" 
+              color="gray" 
+              onClick={toggle}
+              size="lg"
+              radius="md"
+            >
+              {opened ? <IconLayoutSidebarLeftCollapse size={20} /> : <IconLayoutSidebarLeftExpand size={20} />}
+            </ActionIcon>
+
             <Group gap="xs" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
               <Box style={{ 
                   background: 'linear-gradient(45deg, var(--mantine-color-blue-7), var(--mantine-color-cyan-5))',
-                  borderRadius: '10px',
+                  borderRadius: '12px',
                   padding: '6px',
                   display: 'flex',
                   alignItems: 'center',
@@ -214,8 +220,6 @@ export function AppLayout() {
         <AppShell.Section grow>
           <Stack gap="xl">
             {navGroups.map((group, idx) => {
-              if (group.adminOnly && profile?.role !== 'admin') return null;
-              
               return (
                 <Box key={idx}>
                   <Text size="xs" fw={800} c="dimmed" mb="xs" pl="sm" style={{ letterSpacing: rem(1) }}>

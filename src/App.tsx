@@ -24,6 +24,8 @@ import CyclesManagement from './presentation/pages/CyclesManagement';
 import PermissionsManagement from './presentation/pages/PermissionsManagement';
 import { IconTrophy, IconTournament, IconUserCircle } from '@tabler/icons-react';
 import { CopilotProvider } from './application/context/CopilotContext';
+import CeremonyHub from './presentation/pages/CeremonyHub';
+import CheckinFlow from './presentation/pages/CheckinFlow';
 
 function App() {
   return (
@@ -84,6 +86,8 @@ function App() {
               <Route path="/settings/permissions" element={<PermissionsManagement />} />
               <Route path="/settings/structure" element={<Execution />} />
               <Route path="/design-system" element={<DesignSystem />} />
+              <Route path="/ceremony" element={<CeremonyHub />} />
+              <Route path="/ceremony/checkin" element={<CheckinFlow />} />
             </Route>
 
             <Route path="*" element={<Navigate to="/login" replace />} />

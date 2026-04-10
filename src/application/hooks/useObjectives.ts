@@ -12,6 +12,13 @@ export function useObjectives() {
   const fetchObjectives = useCallback(async () => {
     setLoading(true);
 
+    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
+      const { MOCK_OBJECTIVES } = await import('../../infrastructure/data/mockData');
+      setObjectives(MOCK_OBJECTIVES);
+      setLoading(false);
+      return;
+    }
+
     let query = supabase.from('objectives').select('*').order('created_at', { ascending: false });
     if (profile?.tenantId) query = query.eq('tenant_id', profile.tenantId);
 
