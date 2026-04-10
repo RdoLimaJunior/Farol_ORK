@@ -22,9 +22,12 @@ interface KRCardProps {
   getActionsForInitiative: (id: string) => any[];
   onShowEvidence: (action: any) => void;
   getConfidenceData: (conf: string) => { label: string; color: string };
+  isPresentation?: boolean;
 }
 
-export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidence, getConfidenceData }: KRCardProps) {
+
+export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidence, getConfidenceData, isPresentation = false }: KRCardProps) {
+
   const [opened, setOpened] = useState(true);
   const [isSlim, setIsSlim] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,17 +38,22 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       
-      // O KR só encolhe quando "atracar" (physically dock) no seu trilho de 110px
-      if (rect.top <= 111) {
+      // Ajuste de threshold para o modo apresentação
+      const threshold = isPresentation ? 90 : 111;
+      if (rect.top <= threshold) {
         setIsSlim(true);
       } else {
         setIsSlim(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
+
+
+    document.addEventListener('scroll', handleScroll, true);
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, [isPresentation]);
+
+
 
   // LÓGICA DE GLOW (DESTAQUE VISUAL)
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -80,9 +88,10 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
       mb="xl" 
       ref={containerRef} 
       style={{ 
-        scrollMarginTop: rem(122),
+        scrollMarginTop: isPresentation ? rem(82) : rem(122),
         transition: 'all 0.5s ease'
       }}
+
     >
       <motion.div
         animate={isHighlighted ? {
@@ -96,9 +105,11 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
       {/* HEADER DO KR (LEVEL 2) - PLATINUM SLIM STICKY */}
       <Box style={{ 
         position: 'sticky', 
-        top: rem(110), 
+        position: 'sticky', 
+        top: isPresentation ? rem(40) : rem(100), 
         zIndex: 35, 
-        height: isSlim ? rem(38) : rem(110),
+        height: rem(110),
+
         backgroundColor: isSlim ? 'rgba(255, 255, 255, 0.98)' : 'transparent', 
         backdropFilter: isSlim ? 'blur(10px)' : 'none',
         marginLeft: rem(-10),
@@ -108,9 +119,10 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
         alignItems: 'center',
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' 
       }}>
+
         <Paper 
-          withBorder={!isSlim}
-          p={isSlim ? rem(6) : rem(25)} 
+          withBorder={!isSlim && !isPresentation}
+          p={rem(25)} 
           radius={isSlim ? 0 : "md"} 
           shadow={isSlim ? "sm" : "lg"} 
           bg={isSlim ? "white" : "gray.0"}
@@ -128,11 +140,12 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
           <Group justify="space-between" wrap="nowrap">
             <Stack gap={0} flex={1} style={{ overflow: 'hidden' }}>
               <Box style={{ 
-                opacity: isSlim ? 0 : 1, 
-                maxHeight: isSlim ? 0 : rem(20), 
+                opacity: (isSlim && !isPresentation) ? 0 : 1, 
+                maxHeight: (isSlim && !isPresentation) ? 0 : rem(20), 
                 transition: 'all 0.15s ease',
-                visibility: isSlim ? 'hidden' : 'visible'
+                visibility: (isSlim && !isPresentation) ? 'hidden' : 'visible'
               }}>
+
                 <Group gap="xs" mb={4} align="center">
                   <IconTarget size={14} color="var(--mantine-color-teal-6)" />
                   <Text size="xs" fw={800} c={opened ? "teal.7" : "dimmed"} tt="uppercase">KEY RESULT</Text>
@@ -140,7 +153,9 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
               </Box>
               <Box style={{ minHeight: isSlim ? rem(16) : 'auto' }}>
                 <AnimatePresence mode="wait">
-                  {isSlim ? (
+                  {false ? ( // Desativado para manter sempre o visual completo
+
+
                     <motion.div
                       key="slim-title-kr"
                       initial={{ opacity: 0, y: 5 }}
@@ -184,9 +199,10 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
               </Box>
             </Stack>
             
-            <Group gap={isSlim ? "md" : "xl"}>
+            <Group gap={(isSlim && !isPresentation) ? "md" : "xl"}>
               <Stack align="flex-end" gap={0}>
-                {isSlim ? (
+                {(isSlim && !isPresentation) ? (
+
                   <Group gap={6}>
                     {isAtRisk && (
                       <Stack gap={0} align="center">
@@ -216,7 +232,7 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
                   </Group>
                 )}
               </Stack>
-              {!isSlim && (
+              {(!isSlim || isPresentation) && (
                 <Box style={{ 
                   transform: opened ? 'rotate(90deg)' : 'none', 
                   transition: 'transform 0.3s ease',
@@ -225,6 +241,7 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
                   <IconChevronRight size={28} />
                 </Box>
               )}
+
             </Group>
           </Group>
         </Paper>
@@ -258,6 +275,7 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
                   initiative={initi} 
                   actions={getActionsForInitiative(initi.id)}
                   onShowEvidence={onShowEvidence}
+                  isPresentation={isPresentation}
                 />
               ))}
 
@@ -266,7 +284,7 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
                 <Box mt="xl">
                   <Box style={{ 
                     position: 'sticky', 
-                    top: rem(148), // Sticks at the same level where projects stick
+                    top: isPresentation ? rem(150) : rem(210), 
                     zIndex: 32,
                     backgroundColor: 'white',
                     paddingBottom: rem(4)
@@ -276,7 +294,7 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
                       <Text size="xs" fw={800} c="red.9" tt="uppercase">Plano de Ação Corretiva (Fato, Causa, Ação)</Text>
                     </Group>
                   </Box>
-                  <FCAMatrix data={fcaData} stickyTop={rem(182)} /> 
+                  <FCAMatrix data={fcaData} stickyTop={isPresentation ? rem(184) : rem(244)} /> 
                 </Box>
               )}
             </Stack>

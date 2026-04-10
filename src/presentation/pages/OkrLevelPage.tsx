@@ -87,8 +87,9 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
                 radius="md"
                 onClick={openCreate}
               >
-                Criar OKR
+                {title === 'Key Results' ? 'Adicionar KR' : 'Criar OKR'}
               </Button>
+
               <Button 
                 leftSection={<IconFileImport size={18} />} 
                 variant="light" 
@@ -134,8 +135,9 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
                 <Text fw={700} size="xl">Nenhum objetivo encontrado</Text>
                 <Text c="dimmed">Crie o primeiro objetivo de nível {title} usando o botão acima.</Text>
                 <Button leftSection={<IconPlus size={18} />} color={color} radius="md" onClick={openCreate}>
-                  Criar Primeiro OKR
+                  {title === 'Key Results' ? 'Adicionar Primeiro KR' : 'Criar Primeiro OKR'}
                 </Button>
+
               </Stack>
             </Paper>
           )}
@@ -146,7 +148,8 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
       <Modal
         opened={createOpened}
         onClose={closeCreate}
-        title={<Title order={4}>Novo Objetivo — {title}</Title>}
+        title={<Title order={4}>{title === 'Key Results' ? 'Novo Resultado-Chave' : `Novo Objetivo — ${title}`}</Title>}
+
         size="lg"
         radius="md"
         padding="xl"

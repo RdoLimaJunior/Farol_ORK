@@ -1,0 +1,58 @@
+{
+  "profiles": [
+    { "id": "user-lima", "fullName": "Lima Junior", "email": "lima.junior@portfoliotech.com.br", "role": "admin", "jobTitle": "Desenvolvedor Senior", "xpPoints": 1500, "level": 12 },
+    { "id": "user-lidia", "fullName": "Lidia", "email": "lidia@sj.com.br", "role": "member", "jobTitle": "Gestora de Experiência", "xpPoints": 800, "level": 5 }
+  ],
+  "objectives": [
+    { 
+      "id": "O2", 
+      "title": "O2 - Desenvolver os processos de moradia e negócios com foco na experiência do Cliente", 
+      "ownerId": "user-lidia", 
+      "progress": 32, 
+      "status": "at_risk" 
+    }
+  ],
+  "krs": [
+    { 
+      "id": "KR1-O2", 
+      "objectiveId": "O2", 
+      "title": "Estruturar plano de atuação da diretoria de relacionamentos até 31/03/2026", 
+      "ownerId": "user-lidia",
+      "ownerName": "Lidia", 
+      "startValue": 0,
+      "targetValue": 100,
+      "currentValue": 25, 
+      "progress": 25, 
+      "status": "at_risk" 
+    },
+    { 
+      "id": "KR2-O2", 
+      "objectiveId": "O2", 
+      "title": "Alcançar CSAT de 90% na jornada de captação", 
+      "ownerId": "user-lidia",
+      "ownerName": "Lidia", 
+      "startValue": 75,
+      "targetValue": 90,
+      "currentValue": 82, 
+      "progress": 46, 
+      "status": "on_track" 
+    }
+  ],
+  "fcas": [
+    { 
+      "id": "FCA-KR1", 
+      "keyResultId": "KR1-O2", 
+      "fato": "Atraso no cronograma de estruturação do plano devido à dependência da consultoria externa.", 
+      "causa": "O processo de aprovação do contrato no departamento jurídico levou 15 dias a mais que o previsto.", 
+      "acao": "Agendar reunião com o Diretor Jurídico para priorizar contratos de estratégia e criar um checklist de pré-requisitos." 
+    }
+  ],
+  "initiatives": [
+    { "id": "P1-KR1", "keyResultId": "KR1-O2", "ownerId": "user-lidia", "title": "Mapeamento da Jornada do Cliente SJ", "progress": 45, "status": "in_progress" },
+    { "id": "P2-KR2", "keyResultId": "KR2-O2", "ownerId": "user-lidia", "title": "Implantação do Sistema de Feedback Real-Time", "progress": 85, "status": "in_progress" }
+  ],
+  "actions": [
+    { "id": "A1", "parentId": "P1-KR1", "title": "Entrevistas qualitativas", "status": "done" },
+    { "id": "A2", "parentId": "P2-KR2", "title": "Configuração da API", "status": "doing" }
+  ]
+}

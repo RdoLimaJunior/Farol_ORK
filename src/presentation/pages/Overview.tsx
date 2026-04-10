@@ -14,18 +14,22 @@ import { useDashboardData } from '../../application/hooks/useDashboardData';
 import { useKeyResults } from '../../application/hooks/useKeyResults';
 import { useActivities } from '../../application/hooks/useActivities';
 import { useInitiatives } from '../../application/hooks/useInitiatives';
+import { useObjectives } from '../../application/hooks/useObjectives';
 
 export default function Overview() {
+  const { fetchObjectives } = useObjectives();
   const { keyResults, fetchKRs } = useKeyResults();
   const { initiatives, fetchInitiatives, loading: iniLoading } = useInitiatives();
   const { stats, objectives, loading: objLoading } = useDashboardData(keyResults, initiatives);
   const { activities, fetchActivities, loading: actLoading } = useActivities();
 
   useEffect(() => {
+    fetchObjectives();
     fetchKRs();
     fetchActivities();
     fetchInitiatives();
-  }, [fetchKRs, fetchActivities, fetchInitiatives]);
+  }, [fetchObjectives, fetchKRs, fetchActivities, fetchInitiatives]);
+
 
   return (
     <Container size="xl" py="xl">

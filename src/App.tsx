@@ -58,12 +58,13 @@ function App() {
               <Route path="/tactical" element={
                 <OkrLevelPage 
                   level="departmental" 
-                  title="Objetivos Táticos" 
+                  title="Key Results" 
                   icon={IconTournament} 
                   color="farol-blue" 
-                  description="Desdobramento por áreas e departamentos." 
+                  description="Gestão de resultados-chave e métricas táticas da companhia." 
                 />
               } />
+
               <Route path="/individual" element={
                 <OkrLevelPage 
                   level="individual" 

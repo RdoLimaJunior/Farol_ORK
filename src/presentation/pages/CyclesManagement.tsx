@@ -32,17 +32,16 @@ export default function CyclesManagement() {
   const [opened, { open, close }] = useDisclosure(false);
 
   const fetchCycles = useCallback(async () => {
-    if (!profile) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from('cycles')
-      .select('*')
-      .eq('tenant_id', profile.tenantId)
-      .order('start_date', { ascending: false });
-
-    if (!error && data) setCycles(data);
+    // MOCK DATA PARA CICLOS
+    const mockCycles: Cycle[] = [
+      { id: '1', name: 'Q1 2026', start_date: '2026-01-01', end_date: '2026-03-31', status: 'active', tenant_id: '1' },
+      { id: '2', name: 'Q2 2026', start_date: '2026-04-01', end_date: '2026-06-30', status: 'planning', tenant_id: '1' },
+    ];
+    setCycles(mockCycles);
     setLoading(false);
-  }, [profile]);
+  }, []);
+
 
   useEffect(() => {
     fetchCycles();
@@ -63,22 +62,11 @@ export default function CyclesManagement() {
   const handleSubmit = async (values: typeof form.values) => {
     if (!profile) return;
     
-    const { error } = await supabase.from('cycles').insert({
-      name: values.name,
-      start_date: values.start_date.toISOString(),
-      end_date: values.end_date.toISOString(),
-      status: values.status,
-      tenant_id: profile.tenantId,
-    });
+    // MOCK SUBMIT
+    notifications.show({ title: 'Sucesso (Mock)', message: 'Ciclo criado localmente!', color: 'green' });
+    close();
+    form.reset();
 
-    if (error) {
-      notifications.show({ title: 'Erro', message: error.message, color: 'red' });
-    } else {
-      notifications.show({ title: 'Sucesso', message: 'Ciclo criado com sucesso', color: 'green' });
-      close();
-      fetchCycles();
-      form.reset();
-    }
   };
 
   const handleDelete = async (id: string) => {
@@ -86,11 +74,9 @@ export default function CyclesManagement() {
       notifications.show({ title: 'Sem permissão', message: 'Apenas administradores podem excluir ciclos.', color: 'orange' });
       return;
     }
-    const { error } = await supabase.from('cycles').delete().eq('id', id);
-    if (!error) {
-      notifications.show({ title: 'Ciclo removido', message: 'O ciclo foi excluído.', color: 'blue' });
-      fetchCycles();
-    }
+    // MOCK DELETE
+    notifications.show({ title: 'Ciclo removido (Mock)', message: 'O ciclo foi excluído simuladamente.', color: 'blue' });
+
   };
 
   return (

@@ -14,10 +14,13 @@ import {
   IconCheck,
   IconTarget,
   IconChevronDown,
-  IconCalendar
+  IconCalendar,
+  IconMaximize,
+  IconMinimize
 } from '@tabler/icons-react';
 import { useEffect, useState } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useFullscreen } from '@mantine/hooks';
+
 
 // IMPORTAÇÃO DOS NOVOS COMPONENTES MODULARES
 import { ObjectiveSection } from './checkin/ObjectiveSection';
@@ -34,8 +37,10 @@ export default function CheckinFlow() {
   const { actions, initiatives, fetchCeremonyData } = useActions();
   
   const [openedArtifacts, { open, close }] = useDisclosure(false);
+  const { toggle, fullscreen, ref } = useFullscreen();
   const [selectedAction, setSelectedAction] = useState<any>(null);
   const [selectedMonth, setSelectedMonth] = useState('FEVEREIRO / 2026');
+
   
   const months = [
     'JANEIRO / 2026',
@@ -72,8 +77,17 @@ export default function CheckinFlow() {
   if (!objectives.length) return null;
 
   return (
-    <Container size="fluid" py={rem(20)}>
+    <Container 
+      size="fluid" 
+      py={rem(20)} 
+      ref={ref} 
+      className={fullscreen ? 'presentation-container' : ''}
+      style={{ 
+        backgroundColor: fullscreen ? 'light-dark(white, var(--mantine-color-dark-8))' : 'transparent',
+      }}
+    >
       <Stack gap={rem(40)}>
+
         <PageHeader 
           title="Ritual de"
           highlightedText="Check-in Executivo"
@@ -81,8 +95,22 @@ export default function CheckinFlow() {
           icon={IconTarget}
           color="blue"
           rightSection={
-            <Stack gap={rem(4)} align="flex-end">
-              <Text size="xs" fw={900} c="dimmed" tt="uppercase" style={{ letterSpacing: rem(1) }}>Período de Referência</Text>
+            <Group gap="md" align="flex-end">
+              <Button 
+                variant="light" 
+                color="blue" 
+                leftSection={fullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
+                onClick={toggle}
+                radius="md"
+                size="md"
+                style={{ height: rem(42) }}
+              >
+                {fullscreen ? 'Sair da Apresentação' : 'Modo Apresentação'}
+              </Button>
+
+              <Stack gap={rem(4)} align="flex-end">
+                <Text size="xs" fw={900} c="dimmed" tt="uppercase" style={{ letterSpacing: rem(1) }}>Período de Referência</Text>
+
               
               <Menu shadow="xl" width={220} position="bottom-end" transitionProps={{ transition: 'pop-top-right' }} radius="md">
                 <Menu.Target>
@@ -123,7 +151,8 @@ export default function CheckinFlow() {
                   ))}
                 </Menu.Dropdown>
               </Menu>
-            </Stack>
+              </Stack>
+            </Group>
           }
         />
 
@@ -138,8 +167,10 @@ export default function CheckinFlow() {
               getActionsForInitiative={getActionsForInitiative}
               onShowEvidence={handleShowEvidence}
               getConfidenceData={getConfidenceData}
+              isPresentation={fullscreen}
             />
           ))}
+
         </Box>
 
         {/* CONCLUSÃO DO RITUAL (DISCRETO) */}

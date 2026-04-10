@@ -40,32 +40,19 @@ export function InviteMemberModal({ opened, onClose, onSuccess }: InviteMemberMo
     // a senha temporária manualmente ou via invite link do Supabase Dashboard.
     
     // Criamos um placeholder no profiles para o convite
-    const tempId = crypto.randomUUID();
-    const { error } = await supabase.from('profiles').insert({
-      id: tempId,
-      tenant_id: profile.tenantId,
-      full_name: values.fullName,
-      email: values.email,
-      job_title: values.jobTitle || null,
-      department: values.department || null,
-      role: values.role,
-    });
-
-    setLoading(false);
-
-    if (error) {
-      notifications.show({ title: 'Erro ao convidar', message: error.message, color: 'red' });
-    } else {
+    // MOCK INVITE
+    setTimeout(() => {
+      setLoading(false);
       notifications.show({
-        title: 'Convite enviado! 📧',
-        message: `${values.fullName} foi adicionado. Crie o login dele no Supabase Dashboard > Authentication > Users.`,
+        title: 'Convite enviado (Mock)! 📧',
+        message: `${values.fullName} foi adicionado simuladamente.`,
         color: 'green',
-        autoClose: 8000,
       });
       form.reset();
       onClose();
       onSuccess();
-    }
+    }, 800);
+
   };
 
   return (

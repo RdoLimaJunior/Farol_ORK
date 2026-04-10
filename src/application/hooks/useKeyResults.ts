@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../../infrastructure/supabaseClient';
-import { notifications } from '@mantine/notifications';
 import type { KeyResult } from '../../domain/models/types';
+import { getMockData } from '../../infrastructure/data/mockStorage';
 
 export function useKeyResults(objectiveId?: string) {
   const [loading, setLoading] = useState(false);
@@ -9,46 +8,21 @@ export function useKeyResults(objectiveId?: string) {
 
   const fetchKRs = useCallback(async () => {
     setLoading(true);
-    
-    let query = supabase
-      .from('key_results')
-      .select(`
-        *,
-        owner:profiles!owner_id(full_name)
-      `)
-      .order('created_at', { ascending: true });
+    const data = getMockData();
+    const tenantId = '00000000-0000-0000-0000-000000000001';
+
+    let list = data.krs.map((kr: any) => ({
+      ...kr,
+      tenantId,
+      createdAt: kr.createdAt || new Date().toISOString(),
+      updatedAt: kr.updatedAt || new Date().toISOString()
+    }));
 
     if (objectiveId) {
-      query = query.eq('objective_id', objectiveId);
+      list = list.filter((kr: any) => kr.objectiveId === objectiveId);
     }
 
-    const { data, error } = await query;
-
-    if (error) {
-      notifications.show({ title: 'Erro', message: error.message, color: 'red' });
-    } else {
-      const mapped: KeyResult[] = (data || []).map(item => ({
-        id: item.id,
-        tenantId: item.tenant_id,
-        objectiveId: item.objective_id,
-        title: item.title,
-        description: item.description,
-        ownerId: item.owner_id,
-        unit: item.unit,
-        startValue: item.start_value,
-        targetValue: item.target_value,
-        currentValue: item.current_value,
-        weight: item.weight,
-        progress: item.progress || 0,
-        polarity: item.polarity || 'ascending',
-        status: item.status,
-        lastCheckIn: item.last_check_in,
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
-        ownerName: item.owner?.full_name
-      }));
-      setKeyResults(mapped);
-    }
+    setKeyResults(list);
     setLoading(false);
   }, [objectiveId]);
 
@@ -58,3 +32,4 @@ export function useKeyResults(objectiveId?: string) {
     fetchKRs
   };
 }
+

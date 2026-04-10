@@ -32,7 +32,9 @@ interface ObjectiveSectionProps {
   getActionsForInitiative: (id: string) => any[];
   onShowEvidence: (action: any) => void;
   getConfidenceData: (conf: string) => { color: string; label: string };
+  isPresentation?: boolean;
 }
+
 
 export function ObjectiveSection({ 
   obj, 
@@ -40,8 +42,10 @@ export function ObjectiveSection({
   initiatives, 
   getActionsForInitiative, 
   onShowEvidence, 
-  getConfidenceData 
+  getConfidenceData,
+  isPresentation = false
 }: ObjectiveSectionProps) {
+
   const [opened, setOpened] = useState(true);
   const [isStuck, setIsStuck] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -103,18 +107,26 @@ export function ObjectiveSection({
       if (!headerRef.current) return;
       const rect = headerRef.current.getBoundingClientRect();
       
-      // O Objetivo só encolhe quando "atracar" (physically dock) no seu trilho de 60px
-      if (rect.top <= 61) {
+      // O Objetivo só encolhe quando "atracar" (physically dock) no seu trilho
+      // No modo apresentação, compensamos o padding-top do container
+      const threshold = isPresentation ? 50 : 61;
+      if (rect.top <= threshold) {
         setIsStuck(true);
       } else {
         setIsStuck(false);
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
+
+
+
+    // Usamos capture: true para detectar scroll em containers internos (comum no modo fullscreen)
+    document.addEventListener('scroll', handleScroll, true);
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, [isPresentation]);
+
+
 
   const handleDeepLink = (id: string) => {
     const el = document.getElementById(id);
@@ -134,20 +146,21 @@ export function ObjectiveSection({
         ref={headerRef}
         style={{ 
           position: 'sticky', 
-          top: rem(60), 
+          top: isPresentation ? 0 : rem(60), 
           zIndex: 40, 
-          // Manter altura constante do Box pai para evitar o "tremelique" (Layout Shift)
-          height: isStuck ? rem(50) : rem(180),
+          height: isStuck ? rem(40) : rem(180),
+
           backgroundColor: isStuck ? 'rgba(255, 255, 255, 0.98)' : 'transparent', 
           backdropFilter: isStuck ? 'blur(12px)' : 'none',
           transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', // Aceleração UX
           display: 'flex',
           alignItems: 'center'
         }}
+
       >
         <Paper 
           withBorder={!isStuck}
-          p={isStuck ? rem(8) : rem(40)} 
+          p={isStuck ? rem(4) : rem(40)} 
           radius={isStuck ? 0 : "md"} 
           shadow={isStuck ? "md" : "lg"} 
           bg={opened ? "white" : "gray.0"}
@@ -438,16 +451,16 @@ export function ObjectiveSection({
                           })}
                           {allCriticalActions.length > 3 && (
                             <Badge 
-                              variant="light" 
-                              color="gray" 
-                              size="xs" 
-                              radius="xs" 
-                              mt={4} 
-                              style={{ cursor: 'pointer' }}
-                              onClick={() => document.getElementById('krs-detail')?.scrollIntoView({ behavior: 'smooth' })}
-                            >
-                              + {allCriticalActions.length - 3} OUTROS
-                            </Badge>
+                          variant="light" 
+                          color="gray" 
+                          size="xs" 
+                          radius="xs" 
+                          mt={4} 
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => document.getElementById('krs-detail')?.scrollIntoView({ behavior: 'smooth' })}
+                        >
+                          + {allCriticalActions.length - 3} OUTROS
+                        </Badge>
                           )}
                         </>
                       ) : (
@@ -465,7 +478,7 @@ export function ObjectiveSection({
                 id="krs-detail"
                 label={<Text size="md" fw={800} c="blue.9" tt="uppercase">Desdobramento em Key Results</Text>} 
                 labelPosition="center" 
-                style={{ scrollMarginTop: rem(120) }}
+                style={{ scrollMarginTop: isPresentation ? rem(80) : rem(122), transition: 'all 0.5s ease' }}
               />
 
               {/* LISTA DE KRs */}
@@ -478,7 +491,9 @@ export function ObjectiveSection({
                     getActionsForInitiative={getActionsForInitiative}
                     onShowEvidence={onShowEvidence}
                     getConfidenceData={getConfidenceData}
+                    isPresentation={isPresentation}
                   />
+
                 ))}
               </Stack>
             </Stack>

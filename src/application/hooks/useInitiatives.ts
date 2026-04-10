@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../../infrastructure/supabaseClient';
-import { notifications } from '@mantine/notifications';
+import { getMockData } from '../../infrastructure/data/mockStorage';
 
 export interface Initiative {
   id: string;
@@ -10,13 +9,12 @@ export interface Initiative {
   description: string;
   owner_id: string;
   status: 'pending' | 'in_progress' | 'completed' | 'blocked';
-  start_date: string;
-  end_date: string;
+  progress: number;
   profiles?: {
-      full_name: string;
+    full_name: string;
   };
   key_results?: {
-      title: string;
+    title: string;
   };
 }
 
@@ -26,20 +24,28 @@ export function useInitiatives() {
 
   const fetchInitiatives = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from('initiatives')
-      .select(`
-        *,
-        profiles!owner_id (full_name),
-        key_results!key_result_id (title)
-      `)
-      .order('created_at', { ascending: false });
+    const data = getMockData();
+    const tenantId = '00000000-0000-0000-0000-000000000001';
 
-    if (error) {
-      console.warn('Initiatives fetch error:', error);
-    } else {
-      setInitiatives(data || []);
-    }
+    const mapped = data.initiatives.map((i: any) => {
+      // Busca o KR relacionado para o título
+      const kr = data.krs.find((k: any) => k.id === i.keyResultId);
+      // Busca o dono (usando o primeiro perfil como fallback se não houver ownerId)
+      const owner = data.profiles.find((p: any) => p.id === i.ownerId) || data.profiles[0];
+
+      return {
+        ...i,
+        tenant_id: tenantId,
+        key_result_id: i.keyResultId,
+        status: i.status || 'in_progress',
+        progress: i.progress || 0,
+        description: i.description || 'Iniciativa estratégica vinculada ao KR',
+        profiles: { full_name: owner?.fullName || 'Responsável' },
+        key_results: { title: kr?.title || 'Meta Relacionada' }
+      };
+    });
+
+    setInitiatives(mapped);
     setLoading(false);
   }, []);
 
@@ -49,3 +55,5 @@ export function useInitiatives() {
     fetchInitiatives
   };
 }
+
+

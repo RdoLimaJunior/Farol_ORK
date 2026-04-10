@@ -86,46 +86,15 @@ export function useAuth() {
 
   // Listener para mudanças de autenticação
   useEffect(() => {
-    const isMock = import.meta.env.VITE_USE_MOCK_AUTH === 'true';
-    const mockSession = localStorage.getItem('farol_mock_session');
-    
-    if (isMock && mockSession) {
-      setAuthState({ 
-        user: MOCK_USER, 
-        session: { access_token: 'mock', user: MOCK_USER } as Session, 
-        loading: false, 
-        profile: MOCK_PROFILE 
-      });
-      return;
-    } else if (isMock) {
-      setAuthState({ user: null, session: null, loading: false, profile: null });
-      return;
-    }
-
-    // Buscar sessão atual
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const profile = await fetchProfile(session.user.id);
-        setAuthState({ user: session.user, session, loading: false, profile });
-      } else {
-        setAuthState({ user: null, session: null, loading: false, profile: null });
-      }
+    // MODO MOCK GARANTIDO (HARDCODE)
+    setAuthState({ 
+      user: MOCK_USER, 
+      session: { access_token: 'mock', user: MOCK_USER } as Session, 
+      loading: false, 
+      profile: MOCK_PROFILE 
     });
+  }, []);
 
-    // Escutar mudanças
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session?.user) {
-          const profile = await fetchProfile(session.user.id);
-          setAuthState({ user: session.user, session, loading: false, profile });
-        } else {
-          setAuthState({ user: null, session: null, loading: false, profile: null });
-        }
-      }
-    );
-
-    return () => subscription.unsubscribe();
-  }, [fetchProfile]);
 
   // Login com email/senha
   const signIn = async (email: string, password: string) => {

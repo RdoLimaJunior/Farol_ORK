@@ -34,9 +34,12 @@ interface ProjectBoardProps {
   initiative: any;
   actions: any[];
   onShowEvidence: (action: any) => void;
+  isPresentation?: boolean;
 }
 
-export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoardProps) {
+
+export function ProjectBoard({ initiative, actions, onShowEvidence, isPresentation = false }: ProjectBoardProps) {
+
   const [opened, setOpened] = useState(true);
   const [isStuck, setIsStuck] = useState(false);
   const [isWriting, setIsWriting] = useState(false);
@@ -84,16 +87,22 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       
-      if (rect.top <= 149) {
+      // Ajuste de threshold para o modo apresentação
+      const threshold = isPresentation ? 130 : 149;
+      if (rect.top <= threshold) {
         setIsStuck(true);
       } else {
         setIsStuck(false);
       }
     };
-    window.addEventListener('scroll', handleScroll);
+
+
+    document.addEventListener('scroll', handleScroll, true);
     handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, [isPresentation]);
+
+
 
   // LÓGICA DE GLOW (DESTAQUE VISUAL)
   const [isHighlighted, setIsHighlighted] = useState(false);
@@ -115,9 +124,10 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
       mb="xl" 
       ref={containerRef} 
       style={{ 
-        scrollMarginTop: rem(158),
+        scrollMarginTop: isPresentation ? rem(118) : rem(158),
         transition: 'all 0.5s ease'
       }}
+
     >
       <motion.div
         animate={isHighlighted ? {
@@ -131,25 +141,27 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
       {/* HEADER DO PROJETO (LEVEL 3) */}
       <Box style={{ 
         position: 'sticky', 
-        top: rem(148), 
+        top: isPresentation ? rem(150) : rem(210), 
         zIndex: 30, 
-        height: isStuck ? rem(34) : rem(70),
-        backgroundColor: isStuck ? 'rgba(255, 255, 255, 0.98)' : 'transparent', 
-        backdropFilter: isStuck ? 'blur(10px)' : 'none',
+        height: rem(70),
+
+        backgroundColor: (isStuck || isPresentation) ? 'rgba(255, 255, 255, 0.98)' : 'transparent', 
+        backdropFilter: (isStuck || isPresentation) ? 'blur(10px)' : 'none',
         display: 'flex',
         alignItems: 'center',
-        paddingLeft: isStuck ? rem(10) : 0,
+        paddingLeft: (isStuck && !isPresentation) ? rem(10) : 0,
         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)' 
       }}>
+
         <Paper 
-          withBorder={!isStuck}
-          p={isStuck ? rem(4) : "lg"} 
-          radius={isStuck ? 0 : "md"} 
-          shadow={isStuck ? "xs" : "lg"} 
+          withBorder={!isStuck && !isPresentation}
+          p="lg" 
+          radius={(isStuck && !isPresentation) ? 0 : "md"} 
+          shadow={(isStuck || isPresentation) ? "xs" : "lg"} 
           bg={opened ? "white" : "gray.0"}
           w="100%"
           style={{ 
-            borderLeft: isStuck ? '4px solid var(--mantine-color-indigo-6)' : '6px solid var(--mantine-color-indigo-6)', 
+            borderLeft: (isStuck && !isPresentation) ? '4px solid var(--mantine-color-indigo-6)' : '6px solid var(--mantine-color-indigo-6)', 
             cursor: 'pointer',
             transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
             borderTop: isStuck ? 'none' : undefined,
@@ -161,8 +173,9 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
           <Group justify="space-between" wrap="nowrap">
             <Group gap="xs" style={{ overflow: 'hidden', flex: 1, minHeight: isStuck ? rem(16) : 'auto' }}>
               <AnimatePresence mode="wait">
-                {isStuck ? (
+                {false ? ( // Desativado para manter sempre o visual completo
                   <motion.div
+
                     key="stuck-title-p"
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -201,9 +214,9 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
                 )}
               </AnimatePresence>
             </Group>
-            <Group gap={isStuck ? "xs" : "md"}>
-              <Badge variant={opened ? "filled" : "light"} color="indigo" size={isStuck ? "xs" : "md"} radius="xs">{initiative.progress}%</Badge>
-              {!isStuck && (
+            <Group gap={(isStuck && !isPresentation) ? "xs" : "md"}>
+              <Badge variant={opened ? "filled" : "light"} color="indigo" size={(isStuck && !isPresentation) ? "xs" : "md"} radius="xs">{initiative.progress}%</Badge>
+              {(!isStuck || isPresentation) && (
                 <Box style={{ 
                   transform: opened ? 'rotate(90deg)' : 'none', 
                   transition: 'transform 0.3s ease',
@@ -213,6 +226,7 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
                 </Box>
               )}
             </Group>
+
           </Group>
         </Paper>
       </Box>
@@ -321,10 +335,11 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
               <ActionTable actions={actions} onShowEvidence={onShowEvidence} />
 
               {/* STATUS REPORT AREA - REDESIGNED AS SPEECH BUBBLES */}
-              <SimpleGrid cols={{ base: 1, md: 4 }} spacing="xl">
-                <Box style={{ gridColumn: 'span 3' }}>
+              <SimpleGrid cols={1} spacing="xl">
+                <Box style={{ gridColumn: 'span 1' }}>
                   <Stack gap="md">
                     <Group justify="space-between" align="center">
+
                       <Group gap="xs">
                         <IconMessage2 size={18} color="var(--mantine-color-indigo-6)" />
                         <Text size="xs" fw={900} c="indigo.9" tt="uppercase" style={{ letterSpacing: rem(0.8) }}>Análise do Check-in</Text>
@@ -405,9 +420,8 @@ export function ProjectBoard({ initiative, actions, onShowEvidence }: ProjectBoa
                     </Stack>
                   </Stack>
                 </Box>
-
-                <Box />
               </SimpleGrid>
+
             </Stack>
           </motion.div>
         )}

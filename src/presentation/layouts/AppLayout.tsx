@@ -1,4 +1,5 @@
-import { AppShell, Group, NavLink, Title, Text, Avatar, Menu, UnstyledButton, rem, Box, Badge, Divider, Stack, ThemeIcon, Container } from '@mantine/core';
+import { AppShell, Group, NavLink, Title, Text, Avatar, Menu, UnstyledButton, rem, Box, Badge, Divider, Stack, ThemeIcon, Container, ScrollArea } from '@mantine/core';
+
 import { useDisclosure } from '@mantine/hooks';
 import { 
   IconTargetArrow, 
@@ -55,15 +56,14 @@ export function AppLayout() {
         { icon: IconChartBar, label: 'Visão Geral', path: '/overview' },
         { icon: IconCalendarEvent, label: 'Ritual de Check-in Executivo', path: '/ceremony' },
         { icon: IconUserCircle, label: 'Meus OKRs', path: '/individual' },
-        { icon: IconListCheck, label: 'Planos de Ação', path: '/execution' },
       ]
     },
     {
       label: 'GESTÃO ESTRATÉGICA',
       links: [
-        { icon: IconTrophy, label: 'Estratégico', path: '/strategy' },
-        { icon: IconTournament, label: 'Tático', path: '/tactical' },
-        { icon: IconActivity, label: 'Operacional', path: '/execution-overview' },
+        { icon: IconTrophy, label: 'Objetivos', path: '/strategy' },
+        { icon: IconTournament, label: 'Key Results', path: '/tactical' },
+        { icon: IconListCheck, label: 'Planos de Ação', path: '/execution' },
       ]
     },
     {
@@ -82,6 +82,7 @@ export function AppLayout() {
       ]
     }
   ];
+
 
   return (
     <AppShell
@@ -217,7 +218,8 @@ export function AppLayout() {
       </AppShell.Header>
 
       <AppShell.Navbar p="md" style={{ borderRight: '1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))', backgroundColor: 'light-dark(var(--mantine-color-white), var(--mantine-color-dark-8))' }}>
-        <AppShell.Section grow>
+        <AppShell.Section grow component={ScrollArea}>
+
           <Stack gap="xl">
             {navGroups.map((group, idx) => {
               return (

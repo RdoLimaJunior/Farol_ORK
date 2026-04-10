@@ -40,17 +40,16 @@ export default function MembersManagement() {
   const [inviteOpened, { open: openInvite, close: closeInvite }] = useDisclosure(false);
 
   const fetchMembers = useCallback(async () => {
-    if (!profile) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('id, full_name, email, job_title, department, role, is_active, created_at')
-      .eq('tenant_id', profile.tenantId)
-      .order('created_at', { ascending: true });
-
-    if (!error && data) setMembers(data);
+    // MOCK DATA PARA MEMBROS
+    const mockMembers: MemberRow[] = [
+      { id: '1', full_name: 'Lima Junior', email: 'lima@farol.com', job_title: 'Diretor', department: 'Estratégia', role: 'admin', is_active: true, created_at: '2026-01-01' },
+      { id: '2', full_name: 'Ana Silva', email: 'ana@farol.com', job_title: 'Gestora', department: 'Comercial', role: 'member', is_active: true, created_at: '2026-02-01' },
+    ];
+    setMembers(mockMembers);
     setLoading(false);
-  }, [profile]);
+  }, []);
+
 
   useEffect(() => { fetchMembers(); }, [fetchMembers]);
 
@@ -65,11 +64,9 @@ export default function MembersManagement() {
       labels: { confirm: 'Desativar', cancel: 'Cancelar' },
       confirmProps: { color: 'red' },
       onConfirm: async () => {
-        const { error } = await supabase.from('profiles').update({ is_active: false }).eq('id', member.id);
-        if (!error) {
-          notifications.show({ title: 'Membro desativado', message: 'O acesso foi revogado com sucesso.', color: 'blue' });
-          fetchMembers();
-        }
+        // MOCK DEACTIVATE
+        notifications.show({ title: 'Membro desativado (Mock)', message: 'O acesso foi revogado simuladamente.', color: 'blue' });
+
       }
     });
   };
@@ -79,11 +76,9 @@ export default function MembersManagement() {
       notifications.show({ title: 'Sem permissão', message: 'Apenas administradores podem reativar membros.', color: 'orange' });
       return;
     }
-    const { error } = await supabase.from('profiles').update({ is_active: true }).eq('id', member.id);
-    if (!error) {
-      notifications.show({ title: 'Membro reativado ✅', message: `${member.full_name} pode fazer login novamente.`, color: 'green' });
-      fetchMembers();
-    }
+    // MOCK REACTIVATE
+    notifications.show({ title: 'Membro reativado (Mock) ✅', message: `${member.full_name} pode fazer login simuladamente.`, color: 'green' });
+
   };
 
   const filteredMembers = members.filter(m =>

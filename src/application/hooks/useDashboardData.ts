@@ -1,12 +1,17 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useObjectives } from './useObjectives';
 import { useOkrCalculation } from './useOkrCalculation';
 import type { KeyResult } from '../../domain/models/types';
 import type { Initiative } from './useInitiatives';
 
 export function useDashboardData(allKRs: KeyResult[], initiatives: Initiative[] = []) {
-  const { objectives, loading: objLoading } = useObjectives();
+  const { objectives, loading: objLoading, fetchObjectives } = useObjectives();
   const { enrichedObjectives } = useOkrCalculation(objectives, allKRs);
+
+  useEffect(() => {
+    fetchObjectives();
+  }, [fetchObjectives]);
+
 
   const stats = useMemo(() => {
     if (enrichedObjectives.length === 0) return null;

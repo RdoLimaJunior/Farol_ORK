@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../../infrastructure/supabaseClient';
 import type { KeyResult } from '../../domain/models/types';
-import { notifications } from '@mantine/notifications';
+import { getMockData } from '../../infrastructure/data/mockStorage';
 
 export function useKRs() {
   const [loading, setLoading] = useState(false);
@@ -9,47 +8,27 @@ export function useKRs() {
 
   const fetchKRs = useCallback(async (objectiveId?: string) => {
     setLoading(true);
+    const data = getMockData();
+    const tenantId = '00000000-0000-0000-0000-000000000001';
 
-    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
-      const { MOCK_KRS } = await import('../../infrastructure/data/mockData');
-      setKrs(MOCK_KRS);
-      setLoading(false);
-      return;
-    }
+    let list = data.krs.map((kr: any) => ({
+      ...kr,
+      tenantId,
+      createdAt: kr.createdAt || new Date().toISOString(),
+      updatedAt: kr.updatedAt || new Date().toISOString()
+    }));
 
-    let query = supabase.from('key_results').select('*');
-    
     if (objectiveId) {
-      query = query.eq('objective_id', objectiveId);
+      list = list.filter((kr: any) => kr.objectiveId === objectiveId);
     }
 
-    const { data, error } = await query.order('created_at', { ascending: true });
-
-    if (error) {
-      notifications.show({ title: 'Erro', message: error.message, color: 'red' });
-    } else {
-      const mapped: KeyResult[] = (data || []).map(item => ({
-        id: item.id,
-        tenantId: item.tenant_id,
-        objectiveId: item.objective_id,
-        title: item.title,
-        description: item.description,
-        ownerId: item.owner_id,
-        unit: item.unit,
-        startValue: item.start_value,
-        targetValue: item.target_value,
-        currentValue: item.current_value,
-        weight: item.weight || 1,
-        progress: 0, // Calculated in UI
-        polarity: item.polarity || 'ascending',
-        status: item.status,
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
-      }));
-      setKrs(mapped);
-    }
+    setKrs(list);
     setLoading(false);
   }, []);
+
+
+
+
 
   return {
     krs,

@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '../../infrastructure/supabaseClient';
 import type { Action, FCA, Initiative } from '../../domain/models/types';
-import { notifications } from '@mantine/notifications';
+import { getMockData } from '../../infrastructure/data/mockStorage';
 
 export function useActions() {
   const [loading, setLoading] = useState(false);
@@ -11,37 +10,19 @@ export function useActions() {
 
   const fetchCeremonyData = useCallback(async () => {
     setLoading(true);
+    const data = getMockData();
+    const tenantId = '00000000-0000-0000-0000-000000000001';
 
-    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
-      const { MOCK_ACTIONS, MOCK_FCAS, MOCK_INITIATIVES } = await import('../../infrastructure/data/mockData');
-      setActions(MOCK_ACTIONS);
-      setFCAs(MOCK_FCAS);
-      setInitiatives(MOCK_INITIATIVES);
-      setLoading(false);
-      return;
-    }
-
-    // Parallel fetch from Supabase
-    try {
-        const [actionsRes, fcasRes, initiRes] = await Promise.all([
-            supabase.from('actions').select('*'),
-            supabase.from('fcas').select('*'),
-            supabase.from('initiatives').select('*')
-        ]);
-
-        if (actionsRes.error) throw actionsRes.error;
-        if (fcasRes.error) throw fcasRes.error;
-        if (initiRes.error) throw initiRes.error;
-
-        setActions(actionsRes.data || []);
-        setFCAs(fcasRes.data || []);
-        setInitiatives(initiRes.data || []);
-    } catch (error: any) {
-        notifications.show({ title: 'Erro', message: error.message, color: 'red' });
-    }
+    setActions(data.actions.map((a: any) => ({ ...a, tenantId })));
+    setFCAs(data.fcas.map((f: any) => ({ ...f, tenantId })));
+    setInitiatives(data.initiatives.map((i: any) => ({ ...i, tenantId })));
     
     setLoading(false);
   }, []);
+
+
+
+
 
   return {
     actions,

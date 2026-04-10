@@ -4,6 +4,8 @@ import type { Objective } from '../../domain/models/types';
 import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../context/AuthContext';
 
+import { getMockData, updateMockEntity } from '../../infrastructure/data/mockStorage';
+
 export function useObjectives() {
   const { profile } = useAuthContext();
   const [loading, setLoading] = useState(false);
@@ -11,128 +13,69 @@ export function useObjectives() {
 
   const fetchObjectives = useCallback(async () => {
     setLoading(true);
-
-    if (import.meta.env.VITE_USE_MOCK_DATA === 'true') {
-      const { MOCK_OBJECTIVES } = await import('../../infrastructure/data/mockData');
-      setObjectives(MOCK_OBJECTIVES);
-      setLoading(false);
-      return;
-    }
-
-    let query = supabase.from('objectives').select('*').order('created_at', { ascending: false });
-    if (profile?.tenantId) query = query.eq('tenant_id', profile.tenantId);
-
-    const { data, error } = await query;
-
-    if (error) {
-      notifications.show({ title: 'Erro', message: error.message, color: 'red' });
-    } else {
-      const mapped: Objective[] = (data || []).map(item => ({
-        id: item.id,
-        tenantId: item.tenant_id,
-        parentObjectiveId: item.parent_objective_id,
-        title: item.title,
-        description: item.description,
-        cycleId: item.cycle_id,
-        ownerId: item.owner_id,
-        checkInCadence: item.check_in_cadence,
-        isConfidential: item.is_confidential,
-        type: item.type || 'committed',
-        level: item.level || 'organizational',
-        progress: 0,
-        status: item.status,
-        createdAt: item.created_at,
-        updatedAt: item.updated_at,
-      }));
-      setObjectives(mapped);
-    }
+    const data = getMockData();
+    const tenantId = '00000000-0000-0000-0000-000000000001';
+    
+    setObjectives(data.objectives.map((o: any) => ({
+      ...o,
+      tenantId,
+      createdAt: o.createdAt || new Date().toISOString(),
+      updatedAt: o.updatedAt || new Date().toISOString()
+    })));
     setLoading(false);
   }, [profile?.tenantId]);
 
   const createObjective = async (values: Partial<Objective>) => {
-    if (!profile?.id || !profile?.tenantId) {
-      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
-      return;
-    }
     setLoading(true);
+    const newObj = {
+      id: `O-${Date.now()}`,
+      ...values,
+      progress: 0,
+      status: 'draft',
+      createdAt: new Date().toISOString()
+    };
 
-    const { error } = await supabase.from('objectives').insert([{
-      tenant_id: profile.tenantId,
-      parent_objective_id: values.parentObjectiveId || null,
-      title: values.title,
-      description: values.description,
-      cycle_id: values.cycleId || null,
-      owner_id: profile.id,
-      check_in_cadence: values.checkInCadence || 'monthly',
-      is_confidential: values.isConfidential || false,
-      type: values.type || 'committed',
-      level: values.level || 'organizational',
-      status: 'draft'
-    }]);
-
-    if (error) {
-      notifications.show({ title: 'Erro ao criar', message: error.message, color: 'red' });
-    } else {
-      notifications.show({ title: 'Sucesso', message: 'Objetivo criado!', color: 'green' });
+    updateMockEntity('objectives', (items) => [...items, newObj]);
+    
+    setTimeout(() => {
+      notifications.show({ title: 'Sucesso', message: 'Objetivo salvo no LocalStorage!', color: 'green' });
       fetchObjectives();
-    }
-    setLoading(false);
+      setLoading(false);
+    }, 500);
   };
 
   const updateObjective = async (id: string, values: Partial<Objective>) => {
-    if (!profile?.id) {
-      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
-      return;
-    }
     setLoading(true);
-    const { error } = await supabase
-      .from('objectives')
-      .update({
-        title: values.title,
-        description: values.description,
-        cycle_id: values.cycleId,
-        check_in_cadence: values.checkInCadence,
-        is_confidential: values.isConfidential,
-        parent_objective_id: values.parentObjectiveId || null,
-        status: values.status
-      })
-      .eq('id', id);
+    updateMockEntity('objectives', (items) => 
+      items.map(o => o.id === id ? { ...o, ...values, updatedAt: new Date().toISOString() } : o)
+    );
 
-    if (error) {
-      notifications.show({ title: 'Erro ao atualizar', message: error.message, color: 'red' });
-    } else {
-      notifications.show({ title: 'Sucesso', message: 'Objetivo atualizado!', color: 'green' });
+    setTimeout(() => {
+      notifications.show({ title: 'Sucesso', message: 'Alterações persistidas localmente!', color: 'green' });
       fetchObjectives();
-    }
-    setLoading(false);
+      setLoading(false);
+    }, 500);
   };
 
   const importBatch = async (batch: any[]) => {
-    if (!profile?.id || !profile?.tenantId) {
-      notifications.show({ title: 'Erro', message: 'Usuário não autenticado.', color: 'red' });
-      return;
-    }
     setLoading(true);
-
-    const insertData = batch.map(item => ({
-      tenant_id: profile.tenantId,
-      parent_objective_id: item.parent_id || null,
+    const newItems = batch.map((item, idx) => ({
+      id: `O-IMP-${idx}-${Date.now()}`,
       title: item.title,
-      description: item.description || '',
-      owner_id: profile.id,
-      status: 'on_track'
+      description: item.description,
+      status: 'on_track',
+      progress: 0
     }));
 
-    const { error } = await supabase.from('objectives').insert(insertData);
+    updateMockEntity('objectives', (items) => [...items, ...newItems]);
 
-    if (error) {
-      notifications.show({ title: 'Erro na importação', message: error.message, color: 'red' });
-      throw error;
-    } else {
-      await fetchObjectives();
-    }
-    setLoading(false);
+    setTimeout(() => {
+      notifications.show({ title: 'Importação Concluída', message: 'Dados salvos no navegador.', color: 'green' });
+      fetchObjectives();
+      setLoading(false);
+    }, 800);
   };
+
 
   return {
     objectives,

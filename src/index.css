@@ -19,3 +19,22 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Modo Apresentação / Fullscreen */
+:fullscreen {
+  background-color: light-dark(white, var(--mantine-color-dark-8)) !important;
+  overflow-y: auto;
+}
+
+.presentation-container:fullscreen {
+  padding: rem(40) !important;
+  padding-top: 0 !important;
+  max-width: 100vw !important;
+}
+
+/* Ocultar elementos desnecessários em tela cheia se necessário */
+:fullscreen .mantine-AppShell-header,
+:fullscreen .mantine-AppShell-navbar {
+  display: none !important;
+}
+
