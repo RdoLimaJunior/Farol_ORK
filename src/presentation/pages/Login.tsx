@@ -171,6 +171,8 @@ export default function Login() {
                     placeholder="seu@email.com"
                     leftSection={<IconMail size={16} color="var(--mantine-color-farol-blue-6)" />}
                     radius="md" required
+                    value={email}
+                    onChange={(e) => setEmail(e.currentTarget.value)}
                     styles={{
                       label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(4), color: 'var(--mantine-color-gray-6)' },
                       input: { height: rem(46), backgroundColor: '#f1f5f9' }
@@ -181,6 +183,8 @@ export default function Login() {
                     placeholder="••••••••"
                     leftSection={<IconLock size={16} color="var(--mantine-color-farol-blue-6)" />}
                     radius="md" required
+                    value={password}
+                    onChange={(e) => setPassword(e.currentTarget.value)}
                     styles={{
                       label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(4), color: 'var(--mantine-color-gray-6)' },
                       input: { height: rem(46), backgroundColor: '#f1f5f9' }
