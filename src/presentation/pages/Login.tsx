@@ -30,7 +30,6 @@ import {
   IconBuilding,
   IconCheck,
   IconX,
-  IconInfoCircle,
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../../application/context/AuthContext';
@@ -41,16 +40,8 @@ const WelcomePhrases = [
   "Sua Bússola",
   "Resultado Real",
   "Performance de Elite",
-  "Visão Transparente",
   "Alinhamento Total",
-  "Foco na Execução",
-  "Inteligência de Resultados",
-  "Estratégia em Tempo Real",
-  "Cultura de Alta Performance",
-  "O Futuro da Gestão",
-  "Transformando Planos em Ação",
-  "Domine seus OKRs",
-  "Liderança Visionária"
+  "Gestão Inteligente"
 ];
 
 type AuthMode = 'login' | 'register' | 'forgot' | 'magic' | 'otp' | 'sso';
@@ -96,12 +87,12 @@ export default function Login() {
     try {
       const { error } = await signIn(email, password);
       if (error) {
-        notifications.show({ title: 'Acesso Negado', message: 'Credenciais inválidas.', color: 'red', icon: <IconX size={16} /> });
+        notifications.show({ title: 'Acesso Negado', message: 'Verifique seus dados.', color: 'red', icon: <IconX size={16} /> });
       } else {
         navigate('/');
       }
     } catch (err) {
-       notifications.show({ title: 'Erro', message: 'Falha na conexão.', color: 'red' });
+       notifications.show({ title: 'Erro de Conexão', color: 'red' });
     } finally {
       setFormLoading(false);
     }
@@ -112,9 +103,9 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      notifications.show({ title: 'Código Enviado', message: `Verifique sua caixa de entrada.`, color: 'farol-blue' });
+      notifications.show({ title: 'Token Enviado', message: 'Confira seu e-mail.', color: 'blue' });
       setAuthMode('otp');
-    }, 1500);
+    }, 1200);
   };
 
   const handleVerifyOtp = (e: React.FormEvent) => {
@@ -122,11 +113,8 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      if (otpCode === '123456' || otpCode === '000000') {
-         navigate('/');
-      } else {
-        notifications.show({ title: 'Código Inválido', color: 'red' });
-      }
+      if (otpCode === '123456' || otpCode === '000000') navigate('/');
+      else notifications.show({ title: 'Código Inválido', color: 'red' });
     }, 1000);
   };
 
@@ -134,7 +122,7 @@ export default function Login() {
     if (provider === 'google') {
       try { await signInWithGoogle(); } catch (err) { console.error(err); }
     } else {
-      notifications.show({ title: 'SSO Microsoft', message: 'Indisponível no momento.', color: 'gray' });
+      notifications.show({ title: 'SSO Microsoft', message: 'Disponível em breve.', color: 'gray' });
     }
   };
 
@@ -143,7 +131,7 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
        setFormLoading(false);
-       notifications.show({ title: 'SSO Corporativo', message: 'Aguarde redirecionamento...', color: 'farol-blue' });
+       notifications.show({ title: 'Redirecionando...', color: 'blue' });
     }, 1200);
   };
 
@@ -151,80 +139,96 @@ export default function Login() {
     <UnstyledButton
       onClick={onClick}
       style={{
-        height: rem(46),
+        height: rem(48),
         borderRadius: "var(--mantine-radius-md)",
-        border: "1px solid var(--mantine-color-gray-2)",
+        border: "1px solid var(--mantine-color-gray-1)",
         display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, gap: 10,
         backgroundColor: 'var(--mantine-color-white)',
-        transition: 'all 0.15s ease',
+        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
-      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-0)'}
-      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--mantine-color-white)'}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-0)';
+        e.currentTarget.style.transform = 'scale(1.02)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = 'var(--mantine-color-white)';
+        e.currentTarget.style.transform = 'scale(1)';
+      }}
     >
-      <Icon size={18} color={color} stroke={2} />
-      <Text size="sm" fw={600} c="gray.7">{label}</Text>
+      <Icon size={18} color={color} stroke={1.5} />
+      <Text size="sm" fw={500} c="gray.7">{label}</Text>
     </UnstyledButton>
   );
 
   return (
     <Box style={{ height: '100vh', display: 'flex', backgroundColor: '#ffffff' }}>
-      {/* BRANDING SIDE - Minimalist Apple/Google Style */}
+      
+      {/* BRANDING SIDE - Apple Account Style (White + Iridescent Blob) */}
       <Box visibleFrom="md" style={{ 
-        flex: '1.1', 
+        flex: '1.2', 
         position: 'relative', 
         overflow: 'hidden', 
-        backgroundColor: '#00080a', 
+        backgroundColor: '#ffffff', // Pure White
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        borderRight: '1px solid var(--mantine-color-gray-1)'
       }}>
-        {/* Soft Organic Aura */}
+        {/* Soft Iridescent Blob Centerpiece */}
         <motion.div
-           animate={{ opacity: [0.3, 0.4, 0.3] }}
-           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+           animate={{ 
+             scale: [1, 1.1, 1],
+             rotate: [0, 90, 0],
+           }}
+           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
            style={{
              position: 'absolute',
-             width: '80%', height: '80%',
-             background: 'radial-gradient(circle, #01579B 0%, transparent 70%)',
-             filter: 'blur(100px)',
+             width: '500px', height: '500px',
+             background: 'linear-gradient(135deg, rgba(1, 87, 155, 0.1) 0%, rgba(3, 169, 244, 0.1) 30%, rgba(103, 58, 183, 0.1) 60%, rgba(255, 152, 0, 0.05) 100%)',
+             filter: 'blur(80px)',
+             borderRadius: '50%',
            }}
         />
 
         <Stack align="center" gap={0} style={{ position: 'relative', zIndex: 10 }}>
            <motion.div
-             initial={{ opacity: 0, scale: 0.95 }}
+             initial={{ opacity: 0, scale: 0.98 }}
              animate={{ opacity: 1, scale: 1 }}
-             transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
            >
-              <Title order={1} c="white" style={{ fontSize: rem(82), fontWeight: 800, letterSpacing: rem(-3) }}>FAROL</Title>
+              <Title order={1} c="dark.7" style={{ fontSize: rem(64), fontWeight: 700, letterSpacing: rem(-2) }}>FAROL</Title>
            </motion.div>
            
-           <Box h={rem(30)} style={{ overflow: 'hidden' }}>
+           <Box h={rem(32)} mt={rem(10)} style={{ overflow: 'hidden' }}>
               <AnimatePresence mode="wait">
                  <motion.div
                    key={displayText}
-                   initial={{ y: -10, opacity: 0 }}
+                   initial={{ y: 10, opacity: 0 }}
                    animate={{ y: 0, opacity: 1 }}
-                   exit={{ y: 5, opacity: 0 }}
-                   transition={{ duration: 0.5, ease: "easeOut" }}
+                   exit={{ y: -10, opacity: 0 }}
+                   transition={{ duration: 0.6, ease: "easeInOut" }}
                  >
-                    <Text c="white" opacity={0.5} fw={400} size="xl" style={{ fontSize: rem(20), letterSpacing: 1 }}>{displayText}</Text>
+                    <Text c="gray.6" fw={400} size="lg" style={{ letterSpacing: 0.5 }}>{displayText}</Text>
                  </motion.div>
               </AnimatePresence>
            </Box>
         </Stack>
+
+        <Box style={{ position: 'absolute', bottom: 40, width: '100%', textAlign: 'center' }}>
+           <Text size="xs" c="gray.4" fw={600} style={{ letterSpacing: 1.5 }}>STRATEGIC PLATFORM // ACCOUNT SERVICES</Text>
+        </Box>
       </Box>
 
       {/* FORM SIDE */}
       <Box style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Container size={rem(380)} w="100%">
+        <Container size={rem(360)} w="100%">
           <AnimatePresence mode="wait">
             {authMode === 'login' && (
-              <motion.div key="login" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <Stack gap={rem(30)}>
-                  <Box>
-                    <Title order={2} fw={700} size={rem(28)}>Fazer login</Title>
-                    <Text c="dimmed" size="sm" mt={4}>Prossiga para o cockpit estratégico.</Text>
+              <motion.div key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <Stack gap={rem(32)}>
+                  <Box ta="center">
+                    <Title order={2} fw={600} size={rem(28)} c="dark.7">Fazer login</Title>
+                    <Text c="gray.5" size="sm" mt={8} fw={500}>Use sua conta para gerenciar seus resultados.</Text>
                   </Box>
 
                   <form onSubmit={handleLogin}>
@@ -232,56 +236,55 @@ export default function Login() {
                       <TextInput 
                         placeholder="E-mail" size="md" radius="md" required 
                         value={email} onChange={(e) => setEmail(e.currentTarget.value)}
-                        styles={{ input: { height: rem(48) } }}
+                        styles={{ input: { height: rem(50), border: '1.5px solid var(--mantine-color-gray-2)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
                       />
                       <PasswordInput 
                         placeholder="Senha" size="md" radius="md" required 
                         value={password} onChange={(e) => setPassword(e.currentTarget.value)}
-                        styles={{ input: { height: rem(48) } }}
+                        styles={{ input: { height: rem(50), border: '1.5px solid var(--mantine-color-gray-2)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
                       />
                       
                       <Group justify="space-between" mt={4}>
-                         <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
-                         <Group gap="sm">
-                           <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue">Login via e-mail</Anchor>
-                           <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={700} c="farol-blue">SSO</Anchor>
+                         <Checkbox label="Lembrar" size="xs" color="dark" styles={{ label: { paddingLeft: 8, fontWeight: 500 } }} />
+                         <Group gap="xs">
+                           <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={600} c="dark" underline="never">Usar e-mail</Anchor>
+                           <Text size="xs" c="gray.3">|</Text>
+                           <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={600} c="dark" underline="never">SSO</Anchor>
                          </Group>
                       </Group>
 
-                      <Button fullWidth size="lg" radius="md" color="farol-blue" type="submit" loading={formLoading} mt="md" style={{ height: rem(48) }}>Próximo</Button>
+                      <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading} mt="lg" style={{ height: rem(50), fontWeight: 600 }}>Entrar</Button>
                     </Stack>
                   </form>
 
-                  <Divider label="ou continue com" labelPosition="center" styles={{ label: { fontSize: rem(12), color: 'gray' } }} />
+                  <Divider label="ou entrar com" labelPosition="center" styles={{ label: { color: 'var(--mantine-color-gray-4)', fontWeight: 500, fontSize: rem(11) } }} />
 
                    <Group grow gap="sm">
                     <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={() => handleSso('google')} />
                     <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" onClick={() => handleSso('microsoft')} />
                    </Group>
 
-                  <Stack align="center" gap={4}>
-                    <Text size="sm" c="dimmed">
-                      Novo por aqui? <Anchor component="button" onClick={() => setAuthMode('register')} fw={700} c="farol-blue">Crie sua conta</Anchor>
+                  <Stack align="center" gap={6} mt="md">
+                    <Text size="sm" c="gray.5">
+                      Novo por aqui? <Anchor component="button" onClick={() => setAuthMode('register')} fw={700} c="dark" underline="hover">Criar conta</Anchor>
                     </Text>
-                    <Anchor component="button" onClick={() => setAuthMode('forgot')} size="sm" c="dimmed">Esqueceu a senha?</Anchor>
+                    <Anchor component="button" onClick={() => setAuthMode('forgot')} size="sm" c="gray.5" fw={500}>Esqueceu sua senha?</Anchor>
                   </Stack>
                 </Stack>
               </motion.div>
             )}
 
             {authMode === 'magic' && (
-              <motion.div key="magic" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                 <Stack gap={rem(25)}>
-                    <Box>
-                      <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={700} style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 15 }}>
-                        <IconArrowLeft size={16} /> VOLTAR AO LOGIN
-                      </Anchor>
-                      <Title order={2} fw={700} size={rem(28)}>Login via e-mail</Title>
+              <motion.div key="magic" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                 <Stack gap={rem(30)}>
+                    <Box ta="center">
+                      <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={600} mb={10} underline="never">← Voltar</Anchor>
+                      <Title order={2} fw={600} size={rem(28)}>Acesso via e-mail</Title>
                     </Box>
                     <form onSubmit={handleMagic}>
                       <Stack gap="md">
-                        <TextInput placeholder="Seu e-mail" size="md" radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} styles={{ input: { height: rem(48) } }} />
-                        <Button fullWidth size="lg" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48) }}>Receber código</Button>
+                        <TextInput placeholder="seu@email.com" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Enviar código</Button>
                       </Stack>
                     </form>
                  </Stack>
@@ -290,13 +293,13 @@ export default function Login() {
 
             {authMode === 'otp' && (
               <motion.div key="otp" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                 <Stack gap={rem(25)} align="center">
-                    <Title order={2} fw={700} size={rem(28)}>Inserir código</Title>
+                 <Stack gap={rem(30)} align="center">
+                    <Title order={2} fw={600} size={rem(28)}>Validar código</Title>
                     <form onSubmit={handleVerifyOtp} style={{ width: '100%' }}>
                       <Stack gap="xl" align="center">
-                        <PinInput size="lg" length={6} type="number" color="farol-blue" value={otpCode} onChange={setOtpCode} autoFocus />
-                        <Button fullWidth size="lg" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48) }}>Verificar</Button>
-                        <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="sm" c="dimmed">Tentar outro método</Anchor>
+                        <PinInput size="lg" length={6} type="number" color="dark" value={otpCode} onChange={setOtpCode} autoFocus />
+                        <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Verificar</Button>
+                        <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" fw={600}>USAR OUTRO MÉTODO</Anchor>
                       </Stack>
                     </form>
                  </Stack>
@@ -304,16 +307,14 @@ export default function Login() {
             )}
 
             {authMode === 'sso' && (
-              <motion.div key="sso" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+              <motion.div key="sso" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                  <Stack gap={rem(25)}>
-                    <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={700} style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 15 }}>
-                      <IconArrowLeft size={16} /> VOLTAR
-                    </Anchor>
-                    <Title order={2} fw={700} size={rem(28)}>SSO Corporativo</Title>
+                    <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={600} mb={10} underline="never">← Voltar</Anchor>
+                    <Title order={2} fw={600} size={rem(28)} ta="center">SSO Corporativo</Title>
                     <form onSubmit={handleCorporateSso}>
                       <Stack gap="md">
-                        <TextInput placeholder="e-mail@empresa.com" size="md" radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} styles={{ input: { height: rem(48) } }} />
-                        <Button fullWidth size="lg" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48) }}>Continuar</Button>
+                        <TextInput placeholder="e-mail@empresa.com" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Continuar</Button>
                       </Stack>
                     </form>
                  </Stack>
@@ -323,14 +324,14 @@ export default function Login() {
             {authMode === 'register' && (
               <motion.div key="register" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                  <Stack gap={rem(25)}>
-                    <Title order={2} fw={700} size={rem(28)}>Criar conta</Title>
+                    <Title order={2} fw={600} size={rem(28)} ta="center">Criar conta</Title>
                     <form onSubmit={(e) => { e.preventDefault(); setAuthMode('login'); }}>
                       <Stack gap="md">
-                        <TextInput placeholder="Nome" size="md" radius="md" required styles={{ input: { height: rem(48) } }} />
-                        <TextInput placeholder="E-mail" size="md" radius="md" required styles={{ input: { height: rem(48) } }} />
-                        <PasswordInput placeholder="Senha" size="md" radius="md" required styles={{ input: { height: rem(48) } }} />
-                        <Button fullWidth size="lg" radius="md" color="farol-blue" mt="md" type="submit" style={{ height: rem(48) }}>Começar</Button>
-                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="dimmed" ta="center">Voltar ao login</Anchor>
+                        <TextInput placeholder="Nome" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <TextInput placeholder="E-mail" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <PasswordInput placeholder="Senha" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <Button fullWidth size="lg" radius="md" color="dark" mt="md" type="submit">Começar</Button>
+                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={600}>JÁ TENHO CONTA</Anchor>
                       </Stack>
                     </form>
                  </Stack>
@@ -340,12 +341,12 @@ export default function Login() {
             {authMode === 'forgot' && (
               <motion.div key="forgot" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                  <Stack gap={rem(25)}>
-                    <Title order={2} fw={700} size={rem(28)}>Recuperar senha</Title>
+                    <Title order={2} fw={600} size={rem(28)} ta="center">Esqueceu a senha?</Title>
                     <form onSubmit={(e) => { e.preventDefault(); setAuthMode('login'); }}>
                       <Stack gap="md">
-                        <TextInput placeholder="Seu e-mail" size="md" radius="md" required styles={{ input: { height: rem(48) } }} />
-                        <Button fullWidth size="lg" radius="md" color="farol-blue" type="submit" style={{ height: rem(48) }}>Enviar link</Button>
-                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="dimmed" ta="center" mt="md">Cancelar</Anchor>
+                        <TextInput placeholder="Seu e-mail" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <Button fullWidth size="lg" radius="md" color="dark" type="submit">Enviar link</Button>
+                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={600}>CANCELAR</Anchor>
                       </Stack>
                     </form>
                  </Stack>
