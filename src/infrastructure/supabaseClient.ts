@@ -4,6 +4,8 @@ export const supabase = {
     getSession: async () => ({ data: { session: null }, error: null }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
     signInWithPassword: async () => ({ data: { user: null, session: null }, error: null }),
+    signInWithOAuth: async () => ({ data: { url: '#' }, error: null }),
+    signUp: async () => ({ data: { user: null }, error: null }),
     signOut: async () => ({ error: null }),
   },
   from: () => ({

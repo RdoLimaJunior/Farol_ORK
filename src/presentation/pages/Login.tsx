@@ -119,10 +119,20 @@ export default function Login() {
   };
 
   const handleSso = async (provider: 'google' | 'microsoft') => {
+    notifications.show({
+      title: 'Conectando...',
+      message: `Iniciando autenticação com ${provider}...`,
+      color: 'blue',
+      loading: true,
+      autoClose: 1500,
+    });
+
     if (provider === 'google') {
       try { await signInWithGoogle(); } catch (err) { console.error(err); }
     } else {
-      notifications.show({ title: 'SSO Microsoft', message: 'Disponível em breve.', color: 'gray' });
+      setTimeout(() => {
+        notifications.show({ title: 'SSO Microsoft', message: 'Disponível em breve.', color: 'gray' });
+      }, 1000);
     }
   };
 
@@ -144,21 +154,30 @@ export default function Login() {
         border: "1px solid var(--mantine-color-gray-1)",
         display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1, gap: 10,
         backgroundColor: 'var(--mantine-color-white)',
-        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = 'var(--mantine-color-gray-0)';
-        e.currentTarget.style.transform = 'scale(1.02)';
+        e.currentTarget.style.transform = 'translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.05)';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.backgroundColor = 'var(--mantine-color-white)';
-        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = 'none';
       }}
     >
       <Icon size={18} color={color} stroke={1.5} />
       <Text size="sm" fw={500} c="gray.7">{label}</Text>
     </UnstyledButton>
   );
+
+  // Animation variants
+  const itemVariants = {
+    initial: { opacity: 0, y: 15 },
+    animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+    exit: { opacity: 0, y: -10, transition: { duration: 0.3 } }
+  };
 
   return (
     <Box style={{ height: '100vh', display: 'flex', backgroundColor: '#ffffff' }}>
@@ -168,7 +187,7 @@ export default function Login() {
         flex: '1.2', 
         position: 'relative', 
         overflow: 'hidden', 
-        backgroundColor: '#ffffff', // Pure White
+        backgroundColor: '#ffffff',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -177,129 +196,142 @@ export default function Login() {
         {/* Soft Iridescent Blob Centerpiece */}
         <motion.div
            animate={{ 
-             scale: [1, 1.1, 1],
-             rotate: [0, 90, 0],
+             scale: [1, 1.2, 1],
+             rotate: [0, 180, 360],
            }}
-           transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
            style={{
              position: 'absolute',
-             width: '500px', height: '500px',
-             background: 'linear-gradient(135deg, rgba(1, 87, 155, 0.1) 0%, rgba(3, 169, 244, 0.1) 30%, rgba(103, 58, 183, 0.1) 60%, rgba(255, 152, 0, 0.05) 100%)',
-             filter: 'blur(80px)',
+             width: '600px', height: '600px',
+             background: 'linear-gradient(135deg, rgba(1, 87, 155, 0.12) 0%, rgba(3, 169, 244, 0.12) 25%, rgba(103, 58, 183, 0.12) 50%, rgba(33, 150, 243, 0.08) 75%, rgba(1, 87, 155, 0.12) 100%)',
+             filter: 'blur(100px)',
              borderRadius: '50%',
            }}
         />
 
         <Stack align="center" gap={0} style={{ position: 'relative', zIndex: 10 }}>
            <motion.div
-             initial={{ opacity: 0, scale: 0.98 }}
-             animate={{ opacity: 1, scale: 1 }}
-             transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
            >
-              <Title order={1} c="dark.7" style={{ fontSize: rem(64), fontWeight: 700, letterSpacing: rem(-2) }}>FAROL</Title>
+              <Title order={1} c="dark.7" style={{ fontSize: rem(82), fontWeight: 700, letterSpacing: rem(-4) }}>FAROL</Title>
            </motion.div>
            
            <Box h={rem(32)} mt={rem(10)} style={{ overflow: 'hidden' }}>
               <AnimatePresence mode="wait">
                  <motion.div
                    key={displayText}
-                   initial={{ y: 10, opacity: 0 }}
+                   initial={{ y: 20, opacity: 0 }}
                    animate={{ y: 0, opacity: 1 }}
-                   exit={{ y: -10, opacity: 0 }}
-                   transition={{ duration: 0.6, ease: "easeInOut" }}
+                   exit={{ y: -20, opacity: 0 }}
+                   transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                  >
                     <Text c="gray.6" fw={400} size="lg" style={{ letterSpacing: 0.5 }}>{displayText}</Text>
                  </motion.div>
               </AnimatePresence>
            </Box>
         </Stack>
-
-        <Box style={{ position: 'absolute', bottom: 40, width: '100%', textAlign: 'center' }}>
-           <Text size="xs" c="gray.4" fw={600} style={{ letterSpacing: 1.5 }}>STRATEGIC PLATFORM // ACCOUNT SERVICES</Text>
-        </Box>
       </Box>
 
       {/* FORM SIDE */}
       <Box style={{ flex: '1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Container size={rem(360)} w="100%">
+        <Container size={rem(400)} w="100%">
           <AnimatePresence mode="wait">
             {authMode === 'login' && (
-              <motion.div key="login" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <motion.div 
+                key="login" 
+                initial="initial" 
+                animate="animate" 
+                exit="exit" 
+                variants={{ 
+                  animate: { transition: { staggerChildren: 0.08 } } 
+                }}
+              >
                 <Stack gap={rem(32)}>
-                  <Box ta="center">
-                    <Title order={2} fw={600} size={rem(28)} c="dark.7">Fazer login</Title>
-                    <Text c="gray.5" size="sm" mt={8} fw={500}>Use sua conta para gerenciar seus resultados.</Text>
-                  </Box>
+                  <motion.div variants={itemVariants}>
+                    <Title order={2} fw={600} size={rem(32)} c="dark.7" ta="center">Fazer login</Title>
+                    <Text c="gray.5" size="md" mt={8} fw={500} ta="center">Bem-vindo ao cockpit de resultados.</Text>
+                  </motion.div>
 
-                  <form onSubmit={handleLogin}>
+                  <motion.form onSubmit={handleLogin} variants={itemVariants}>
                     <Stack gap="md">
                       <TextInput 
                         placeholder="E-mail" size="md" radius="md" required 
                         value={email} onChange={(e) => setEmail(e.currentTarget.value)}
-                        styles={{ input: { height: rem(50), border: '1.5px solid var(--mantine-color-gray-2)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
+                        styles={{ input: { height: rem(52), border: '1.5px solid var(--mantine-color-gray-1)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
                       />
                       <PasswordInput 
                         placeholder="Senha" size="md" radius="md" required 
                         value={password} onChange={(e) => setPassword(e.currentTarget.value)}
-                        styles={{ input: { height: rem(50), border: '1.5px solid var(--mantine-color-gray-2)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
+                        styles={{ input: { height: rem(52), border: '1.5px solid var(--mantine-color-gray-1)', '&:focus': { borderColor: 'var(--mantine-color-dark-4)' } } }}
                       />
                       
                       <Group justify="space-between" mt={4}>
-                         <Checkbox label="Lembrar" size="xs" color="dark" styles={{ label: { paddingLeft: 8, fontWeight: 500 } }} />
+                         <Checkbox label="Permanecer conectado" size="xs" color="dark" styles={{ label: { paddingLeft: 8, fontWeight: 500 } }} />
                          <Group gap="xs">
-                           <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={600} c="dark" underline="never">Usar e-mail</Anchor>
+                           <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="dark" underline="never">Usar e-mail</Anchor>
                            <Text size="xs" c="gray.3">|</Text>
-                           <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={600} c="dark" underline="never">SSO</Anchor>
+                           <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={700} c="dark" underline="never">SSO</Anchor>
                          </Group>
                       </Group>
 
-                      <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading} mt="lg" style={{ height: rem(50), fontWeight: 600 }}>Entrar</Button>
+                      <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading} mt="lg" style={{ height: rem(52), fontWeight: 700 }}>Acessar</Button>
                     </Stack>
-                  </form>
+                  </motion.form>
 
-                  <Divider label="ou entrar com" labelPosition="center" styles={{ label: { color: 'var(--mantine-color-gray-4)', fontWeight: 500, fontSize: rem(11) } }} />
+                  <motion.div variants={itemVariants}>
+                    <Divider label="ou continuar com" labelPosition="center" styles={{ label: { color: 'var(--mantine-color-gray-4)', fontWeight: 600, fontSize: rem(10), textTransform: 'uppercase', letterSpacing: 1 } }} />
+                  </motion.div>
 
-                   <Group grow gap="sm">
-                    <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={() => handleSso('google')} />
-                    <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" onClick={() => handleSso('microsoft')} />
-                   </Group>
+                  <motion.div variants={itemVariants}>
+                     <Group grow gap="sm">
+                      <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={() => handleSso('google')} />
+                      <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" onClick={() => handleSso('microsoft')} />
+                     </Group>
+                  </motion.div>
 
-                  <Stack align="center" gap={6} mt="md">
-                    <Text size="sm" c="gray.5">
-                      Novo por aqui? <Anchor component="button" onClick={() => setAuthMode('register')} fw={700} c="dark" underline="hover">Criar conta</Anchor>
-                    </Text>
-                    <Anchor component="button" onClick={() => setAuthMode('forgot')} size="sm" c="gray.5" fw={500}>Esqueceu sua senha?</Anchor>
-                  </Stack>
+                  <motion.div variants={itemVariants}>
+                    <Stack align="center" gap={8} mt="md">
+                      <Text size="sm" c="gray.5" fw={500}>
+                        Novo por aqui? <Anchor component="button" onClick={() => setAuthMode('register')} fw={700} c="dark" underline="hover">Criar conta</Anchor>
+                      </Text>
+                      <Anchor component="button" onClick={() => setAuthMode('forgot')} size="sm" c="gray.4" fw={500}>Esqueceu sua senha?</Anchor>
+                    </Stack>
+                  </motion.div>
                 </Stack>
               </motion.div>
             )}
 
             {authMode === 'magic' && (
-              <motion.div key="magic" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="magic" initial="initial" animate="animate" exit="exit" variants={{ animate: { transition: { staggerChildren: 0.1 } } }}>
                  <Stack gap={rem(30)}>
-                    <Box ta="center">
-                      <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={600} mb={10} underline="never">← Voltar</Anchor>
-                      <Title order={2} fw={600} size={rem(28)}>Acesso via e-mail</Title>
-                    </Box>
-                    <form onSubmit={handleMagic}>
+                    <motion.div variants={itemVariants}>
+                      <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={700} mb={10} underline="never" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <IconArrowLeft size={16} /> Voltar
+                      </Anchor>
+                      <Title order={2} fw={600} size={rem(32)}>Entrar com e-mail</Title>
+                      <Text c="gray.5" mt={5}>Enviaremos um código de segurança.</Text>
+                    </motion.div>
+                    <motion.form onSubmit={handleMagic} variants={itemVariants}>
                       <Stack gap="md">
-                        <TextInput placeholder="seu@email.com" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <TextInput placeholder="seu@email.com" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
                         <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Enviar código</Button>
                       </Stack>
-                    </form>
+                    </motion.form>
                  </Stack>
               </motion.div>
             )}
 
             {authMode === 'otp' && (
-              <motion.div key="otp" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="otp" initial="initial" animate="animate" exit="exit" variants={itemVariants}>
                  <Stack gap={rem(30)} align="center">
-                    <Title order={2} fw={600} size={rem(28)}>Validar código</Title>
+                    <Title order={2} fw={600} size={rem(32)} ta="center">Validar token</Title>
                     <form onSubmit={handleVerifyOtp} style={{ width: '100%' }}>
                       <Stack gap="xl" align="center">
                         <PinInput size="lg" length={6} type="number" color="dark" value={otpCode} onChange={setOtpCode} autoFocus />
-                        <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Verificar</Button>
-                        <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" fw={600}>USAR OUTRO MÉTODO</Anchor>
+                        <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading} style={{ height: (52) }}>Entrar</Button>
+                        <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" fw={700} underline="never">TENTAR OUTRA FORMA</Anchor>
                       </Stack>
                     </form>
                  </Stack>
@@ -307,13 +339,15 @@ export default function Login() {
             )}
 
             {authMode === 'sso' && (
-              <motion.div key="sso" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="sso" initial="initial" animate="animate" exit="exit" variants={itemVariants}>
                  <Stack gap={rem(25)}>
-                    <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={600} mb={10} underline="never">← Voltar</Anchor>
-                    <Title order={2} fw={600} size={rem(28)} ta="center">SSO Corporativo</Title>
+                    <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.5" fw={700} mb={10} underline="never" style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <IconArrowLeft size={16} /> Voltar
+                    </Anchor>
+                    <Title order={2} fw={600} size={rem(32)}>SSO Corporativo</Title>
                     <form onSubmit={handleCorporateSso}>
                       <Stack gap="md">
-                        <TextInput placeholder="e-mail@empresa.com" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <TextInput placeholder="e-mail@empresa.com" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
                         <Button fullWidth size="lg" radius="md" color="dark" type="submit" loading={formLoading}>Continuar</Button>
                       </Stack>
                     </form>
@@ -322,31 +356,33 @@ export default function Login() {
             )}
 
             {authMode === 'register' && (
-              <motion.div key="register" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="register" initial="initial" animate="animate" exit="exit" variants={{ animate: { transition: { staggerChildren: 0.1 } } }}>
                  <Stack gap={rem(25)}>
-                    <Title order={2} fw={600} size={rem(28)} ta="center">Criar conta</Title>
-                    <form onSubmit={(e) => { e.preventDefault(); setAuthMode('login'); }}>
+                    <motion.div variants={itemVariants}>
+                      <Title order={2} fw={600} size={rem(32)}>Criar conta</Title>
+                    </motion.div>
+                    <motion.form onSubmit={(e) => { e.preventDefault(); setAuthMode('login'); }} variants={itemVariants}>
                       <Stack gap="md">
-                        <TextInput placeholder="Nome" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
-                        <TextInput placeholder="E-mail" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
-                        <PasswordInput placeholder="Senha" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
-                        <Button fullWidth size="lg" radius="md" color="dark" mt="md" type="submit">Começar</Button>
-                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={600}>JÁ TENHO CONTA</Anchor>
+                        <TextInput placeholder="Nome" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
+                        <TextInput placeholder="E-mail" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
+                        <PasswordInput placeholder="Senha" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
+                        <Button fullWidth size="lg" radius="md" color="dark" mt="md" type="submit">Cadastrar</Button>
+                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={700} mt="md" display="block">JÁ TENHO CONTA</Anchor>
                       </Stack>
-                    </form>
+                    </motion.form>
                  </Stack>
               </motion.div>
             )}
 
             {authMode === 'forgot' && (
-              <motion.div key="forgot" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <motion.div key="forgot" initial="initial" animate="animate" exit="exit" variants={itemVariants}>
                  <Stack gap={rem(25)}>
-                    <Title order={2} fw={600} size={rem(28)} ta="center">Esqueceu a senha?</Title>
+                    <Title order={2} fw={600} size={rem(32)} ta="center">Recuperar acesso</Title>
                     <form onSubmit={(e) => { e.preventDefault(); setAuthMode('login'); }}>
                       <Stack gap="md">
-                        <TextInput placeholder="Seu e-mail" size="md" radius="md" required styles={{ input: { height: rem(50) } }} />
+                        <TextInput placeholder="Seu e-mail" size="md" radius="md" required styles={{ input: { height: rem(52) } }} />
                         <Button fullWidth size="lg" radius="md" color="dark" type="submit">Enviar link</Button>
-                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={600}>CANCELAR</Anchor>
+                        <Anchor component="button" onClick={() => setAuthMode('login')} size="sm" c="gray.4" ta="center" fw={700} mt="md" display="block">CANCELAR</Anchor>
                       </Stack>
                     </form>
                  </Stack>
