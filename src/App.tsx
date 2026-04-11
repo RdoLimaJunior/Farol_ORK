@@ -4,14 +4,12 @@ import Overview from './presentation/pages/Overview';
 import OkrLevelPage from './presentation/pages/OkrLevelPage';
 import Execution from './presentation/pages/Execution';
 import Login from './presentation/pages/Login';
-import Register from './presentation/pages/Register';
 import DesignSystem from './presentation/pages/DesignSystem';
 import Engagement from './presentation/pages/Engagement';
 import { AppLayout } from './presentation/layouts/AppLayout';
 import OkrDetails from './presentation/pages/OkrDetails';
 import { AuthProvider } from './application/context/AuthContext';
 import { ProtectedRoute } from './presentation/components/ProtectedRoute';
-import ForgotPassword from './presentation/pages/ForgotPassword';
 import ResetPassword from './presentation/pages/ResetPassword';
 import Profile from './presentation/pages/Profile';
 import MembersManagement from './presentation/pages/MembersManagement';
@@ -34,8 +32,6 @@ function App() {
       <CopilotProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/set-password" element={<SetPassword />} />
           
