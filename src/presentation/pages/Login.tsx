@@ -396,9 +396,12 @@ export default function Login() {
                           Verificar e Entrar
                         </Button>
 
-                        <Text size="xs" c="dimmed" fw={600}>
-                          Não recebeu o código? <Anchor component="button" type="button" onClick={() => handleMagic({ preventDefault: () => {} } as any)} fw={800} c="farol-blue">Reenviar</Anchor>
-                        </Text>
+                        <Stack gap={5} align="center">
+                          <Text size="xs" c="dimmed" fw={600}>
+                            Não recebeu o código? <Anchor component="button" type="button" onClick={() => handleMagic({ preventDefault: () => {} } as any)} fw={800} c="farol-blue">Reenviar</Anchor>
+                          </Text>
+                          <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="xs" fw={700} c="gray.5">Tentar outro método de acesso</Anchor>
+                        </Stack>
                       </Stack>
                     </form>
                  </Stack>
