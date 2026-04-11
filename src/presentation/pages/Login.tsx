@@ -13,6 +13,7 @@ import {
   Container,
   UnstyledButton,
   ThemeIcon,
+  Checkbox,
 } from '@mantine/core';
 import { useNavigate, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -173,6 +174,16 @@ export default function Login() {
                       input: { height: rem(46), backgroundColor: '#f1f5f9' }
                     }}
                   />
+
+                  <Checkbox 
+                    label="Lembrar-me neste dispositivo" 
+                    size="xs" 
+                    color="farol-blue"
+                    styles={{
+                      label: { fontWeight: 600, color: 'var(--mantine-color-gray-6)' }
+                    }}
+                  />
+
                   <Button 
                     fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading}
                     style={{ height: rem(48), marginTop: rem(10) }}
