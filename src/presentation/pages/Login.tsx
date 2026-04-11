@@ -45,7 +45,7 @@ const WelcomeTexts = [
   "Resultado Real."
 ];
 
-type AuthMode = 'login' | 'register' | 'forgot' | 'magic' | 'otp';
+type AuthMode = 'login' | 'register' | 'forgot' | 'magic' | 'otp' | 'sso';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -195,6 +195,20 @@ export default function Login() {
     }
   };
 
+  const handleCorporateSso = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setTimeout(() => {
+      setFormLoading(false);
+      notifications.show({
+        title: 'Redirecionando...',
+        message: 'Detectamos o provedor de identidade da sua empresa. Carregando portal...',
+        color: 'blue',
+        icon: <IconBuildingSkyscraper size={18} />,
+        loading: true,
+      });
+    }, 1500);
+  };
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setFormLoading(true);
@@ -302,16 +316,19 @@ export default function Login() {
                         radius="md" required value={password} onChange={(e) => setPassword(e.currentTarget.value)}
                         styles={{ label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(4), color: 'var(--mantine-color-gray-6)' }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }}
                       />
-                      <Group justify="space-between">
-                         <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
-                         <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue">Acesso Verificado</Anchor>
+                      <Group justify="space-between" mt="xs">
+                        <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
+                        <Group gap="sm">
+                          <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue" underline="never">Acesso Verificado</Anchor>
+                          <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={700} c="farol-blue" underline="never">SSO Corporativo</Anchor>
+                        </Group>
                       </Group>
                       <Button fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48), marginTop: rem(10) }}>Entrar</Button>
                     </Stack>
                   </form>
 
                   <Divider label="OU ENTRAR COM" labelPosition="center" styles={{ label: { fontSize: rem(9), fontWeight: 800 } }} />
-+
+
                    <Group grow gap="xs">
                     <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={() => handleSso('google')} />
                     <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" onClick={() => handleSso('microsoft')} />
@@ -449,6 +466,43 @@ export default function Login() {
                       <Stack gap="sm">
                         <TextInput label="E-MAIL CADASTRADO" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
                         <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" type="submit" loading={formLoading} style={{ height: rem(48) }}>Enviar Instruções</Button>
+                      </Stack>
+                    </form>
+                 </Stack>
+              </motion.div>
+            )}
+            {authMode === 'sso' && (
+              <motion.div key="sso" variants={containerVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
+                 <Stack gap={rem(25)}>
+                    <Box>
+                      <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
+                        <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
+                      </UnstyledButton>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Single Sign-On</Title>
+                      <Text c="dimmed" fw={500}>Insira seu e-mail corporativo para prosseguir.</Text>
+                    </Box>
+
+                    <form onSubmit={handleCorporateSso}>
+                      <Stack gap="md">
+                        <TextInput 
+                          label="E-MAIL CORPORATIVO" 
+                          placeholder="seu@empresa.com" 
+                          leftSection={<IconBuildingSkyscraper size={16} />} 
+                          radius="md" required 
+                          value={email} 
+                          onChange={(e) => setEmail(e.currentTarget.value)}
+                          styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(52), backgroundColor: '#f1f5f9' } }} 
+                        />
+                        <Button 
+                          fullWidth size="md" radius="md" color="indigo" mt="md" type="submit" loading={formLoading}
+                          leftSection={<IconLock size={18} />}
+                          style={{ height: rem(54) }}
+                        >
+                          Entrar com Single Sign-On
+                        </Button>
+                        <Text size="xs" c="dimmed" ta="center" px="xl" mt="sm">
+                           Ao clicar, você será redirecionado para o portal de identidade da sua organização.
+                        </Text>
                       </Stack>
                     </form>
                  </Stack>
