@@ -33,7 +33,8 @@ import {
   IconInfoCircle,
   IconSparkles,
   IconSend,
-  IconAlertCircle
+  IconAlertCircle,
+  IconLayoutDashboard
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../../application/context/AuthContext';
@@ -106,19 +107,9 @@ export default function Login() {
     try {
       const { error } = await signIn(email, password);
       if (error) {
-        notifications.show({
-          title: 'Erro de Login',
-          message: 'Usuário ou senha incorretos.',
-          color: 'red',
-          icon: <IconX size={18} />,
-        });
+        notifications.show({ title: 'Erro de Login', message: 'Usuário ou senha incorretos.', color: 'red', icon: <IconX size={18} /> });
       } else {
-        notifications.show({
-          title: 'Acesso Permitido',
-          message: 'Carregando cockpit estratégico...',
-          color: 'green',
-          icon: <IconCheck size={18} />,
-        });
+        notifications.show({ title: 'Acesso Permitido', message: 'Carregando cockpit estratégico...', color: 'green', icon: <IconCheck size={18} /> });
         navigate('/');
       }
     } catch (err) {
@@ -133,12 +124,7 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      notifications.show({
-        title: 'Token Enviado',
-        message: `Insira o código enviado para ${email || 'seu e-mail'}.`,
-        color: 'cyan',
-        icon: <IconSend size={18} />,
-      });
+      notifications.show({ title: 'Token Enviado', message: `Insira o código enviado para ${email || 'seu e-mail'}.`, color: 'cyan', icon: <IconSend size={18} /> });
       setAuthMode('otp');
     }, 1800);
   };
@@ -149,48 +135,21 @@ export default function Login() {
     setTimeout(() => {
       setFormLoading(false);
       if (otpCode === '123456' || otpCode === '000000') {
-        notifications.show({
-          title: 'Acesso Verificado',
-          message: 'Tokens conferem. Iniciando sessão...',
-          color: 'green',
-          icon: <IconCheck size={18} />,
-        });
+        notifications.show({ title: 'Acesso Verificado', message: 'Tokens conferem. Iniciando sessão...', color: 'green', icon: <IconCheck size={18} /> });
         navigate('/');
       } else {
-        notifications.show({
-          title: 'Token Inválido',
-          message: 'O código inserido não confere ou expirou.',
-          color: 'red',
-          icon: <IconX size={18} />,
-        });
+        notifications.show({ title: 'Token Inválido', message: 'O código inserido não confere ou expirou.', color: 'red', icon: <IconX size={18} /> });
       }
     }, 1200);
   };
 
   const handleSso = async (provider: 'google' | 'microsoft') => {
-    notifications.show({
-      title: 'Conectando...',
-      message: `Redirecionando para autenticação com ${provider === 'google' ? 'Google' : 'Microsoft'}...`,
-      color: 'blue',
-      loading: true,
-      autoClose: 2000,
-    });
-
+    notifications.show({ title: 'Conectando...', message: `Redirecionando para ${provider}...`, color: 'blue', loading: true, autoClose: 2000 });
     if (provider === 'google') {
-      try {
-        await signInWithGoogle();
-      } catch (err) {
-        console.error('SSO error:', err);
-      }
+      try { await signInWithGoogle(); } catch (err) { console.error('SSO error:', err); }
     } else {
-      // Mock Microsoft for now
       setTimeout(() => {
-        notifications.show({
-          title: 'Integração em Configuração',
-          message: 'O SSO da Microsoft está sendo validado pelo TI da sua empresa.',
-          color: 'orange',
-          icon: <IconAlertCircle size={18} />,
-        });
+        notifications.show({ title: 'Integração em Configuração', message: 'O SSO da Microsoft está sendo validado pelo TI.', color: 'orange', icon: <IconAlertCircle size={18} /> });
       }, 1000);
     }
   };
@@ -200,15 +159,10 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      notifications.show({
-        title: 'Redirecionando...',
-        message: 'Detectamos o provedor de identidade da sua empresa. Carregando portal...',
-        color: 'blue',
-        icon: <IconBuildingSkyscraper size={18} />,
-        loading: true,
-      });
+      notifications.show({ title: 'Redirecionando...', message: 'Carregando portal corporativo...', color: 'blue', icon: <IconBuildingSkyscraper size={18} />, loading: true });
     }, 1500);
   };
+
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     setFormLoading(true);
@@ -253,6 +207,31 @@ export default function Login() {
     exit: { opacity: 0, x: -10 }
   };
 
+  // Helper for background elements
+  const Particles = () => (
+    <Box style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      {[...Array(6)].map((_, i) => (
+        <motion.div
+          key={i}
+          initial={{ x: -100, y: Math.random() * 100 + "%", opacity: 0 }}
+          animate={{ x: '110vw', opacity: [0, 0.5, 0] }}
+          transition={{ 
+            duration: Math.random() * 10 + 10, 
+            repeat: Infinity, 
+            delay: Math.random() * 20,
+            ease: "linear" 
+          }}
+          style={{
+            position: 'absolute',
+            width: rem(150),
+            height: '1px',
+            background: 'linear-gradient(90deg, transparent, var(--mantine-color-cyan-4), transparent)',
+          }}
+        />
+      ))}
+    </Box>
+  );
+
   return (
     <Box style={{ height: '100vh', display: 'flex', overflow: 'hidden', backgroundColor: '#f8fafc' }}>
       <style>{`
@@ -262,30 +241,73 @@ export default function Login() {
           transform: translateY(-1px);
           box-shadow: var(--mantine-shadow-xs);
         }
+        .strategic-grid {
+           background-image: 
+            linear-gradient(to right, rgba(3, 169, 244, 0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(3, 169, 244, 0.05) 1px, transparent 1px);
+          background-size: 60px 60px;
+        }
       `}</style>
 
-      {/* BRANDING SIDE */}
-      <Box visibleFrom="md" style={{ flex: '1.2', position: 'relative', overflow: 'hidden', backgroundColor: '#001219' }}>
-        <motion.div
-          animate={{ 
-            background: [
-              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
-              `radial-gradient(circle at ${100 - gradientPos.x}% ${100 - gradientPos.y}%, rgba(3, 169, 244, 0.2) 0%, rgba(0, 18, 25, 1) 70%)`,
-              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
-            ]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          style={{ position: 'absolute', inset: 0 }}
-        />
-        <Box style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%2 noiseFilter)'/%3E%3C/svg%3E")` }} />
+      {/* BRANDING SIDE - Technological Cockpit */}
+      <Box visibleFrom="md" className="strategic-grid" style={{ flex: '1.2', position: 'relative', overflow: 'hidden', backgroundColor: '#001219' }}>
+        {/* Deep Glow Nucleus */}
+        <Box style={{ 
+          position: 'absolute', 
+          top: '50%', left: '50%', 
+          transform: 'translate(-50%, -50%)',
+          width: '600px', height: '600px',
+          background: 'radial-gradient(circle, rgba(1, 87, 155, 0.15) 0%, rgba(0, 18, 25, 0) 70%)',
+          filter: 'blur(80px)'
+        }} />
+
+        {/* Dynamic Background Noise/Texture */}
+        <Box style={{ position: 'absolute', inset: 0, opacity: 0.02, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%2 noiseFilter)'/%3E%3C/svg%3E")` }} />
+
+        <Particles />
 
         <Stack p={rem(80)} justify="center" h="100%" style={{ position: 'relative', zIndex: 10 }}>
-          <Title order={1} c="white" style={{ fontSize: rem(64), fontWeight: 900, letterSpacing: rem(-2) }}>FAROL</Title>
-          <Box mt="xl" style={{ borderLeft: '4px solid var(--mantine-color-cyan-5)', paddingLeft: rem(30) }}>
-            <Title order={2} c="white" style={{ fontSize: rem(42), fontWeight: 400 }}>
+          <Box style={{ position: 'relative' }}>
+             <motion.div
+               animate={{ opacity: [0.1, 0.3, 0.1] }}
+               transition={{ duration: 4, repeat: Infinity }}
+               style={{ 
+                 position: 'absolute', top: -40, left: -20, 
+                 fontSize: rem(10), fontWeight: 800, color: 'var(--mantine-color-cyan-5)', 
+                 letterSpacing: 2, fontFamily: 'monospace' 
+               }}
+             >
+                SECURE_PROTOCOL_v4.2 // STRATEGIC_CORE
+             </motion.div>
+
+             <Title order={1} c="white" style={{ fontSize: rem(82), fontWeight: 900, letterSpacing: rem(-4), textShadow: '0 0 30px rgba(3, 169, 244, 0.3)' }}>FAROL</Title>
+             
+             <Group gap="xs" mt={-10}>
+                <Box h={2} w={40} bg="cyan.5" />
+                <Text size="xs" fw={800} c="cyan.5" style={{ letterSpacing: 3, textTransform: 'uppercase' }}>Strategic Cockpit</Text>
+             </Group>
+          </Box>
+
+          <Box mt={rem(60)} style={{ borderLeft: '1px solid rgba(255,255,255,0.1)', paddingLeft: rem(40) }}>
+            <Title order={2} c="white" style={{ fontSize: rem(48), lineHeight: 1.1, fontWeight: 300 }}>
               {displayText}
-              <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} style={{ marginLeft: rem(8), width: rem(3), height: '0.9em', background: 'var(--mantine-color-cyan-4)', display: 'inline-block' }} />
+              <motion.span animate={{ opacity: [0, 1, 0] }} transition={{ repeat: Infinity, duration: 0.8 }} style={{ marginLeft: rem(8), width: rem(4), height: '0.8em', background: 'var(--mantine-color-cyan-4)', display: 'inline-block', verticalAlign: 'middle' }} />
             </Title>
+            <Text mt="xl" c="dimmed" style={{ maxWidth: 400, fontSize: rem(14), lineHeight: 1.6 }}>
+               Potencializando a execução estratégica através de inteligência de dados e visibilidade em tempo real.
+            </Text>
+          </Box>
+
+          {/* UI Deco elements */}
+          <Box style={{ position: 'absolute', bottom: 40, left: 80, display: 'flex', gap: 40, opacity: 0.3 }}>
+             <Stack gap={2}>
+                <Text size="xs" fw={800} c="white" style={{ letterSpacing: 1 }}>SYSTEM_STATUS</Text>
+                <Text size="xs" c="cyan.4" fw={700}>OPERATIONAL // 100%</Text>
+             </Stack>
+             <Stack gap={2}>
+                <Text size="xs" fw={800} c="white" style={{ letterSpacing: 1 }}>LAST_SYNC</Text>
+                <Text size="xs" c="cyan.4" fw={700}>NOW_ACTIVE</Text>
+             </Stack>
           </Box>
         </Stack>
       </Box>
@@ -396,22 +418,11 @@ export default function Login() {
                     <form onSubmit={handleVerifyOtp} style={{ width: '100%' }}>
                       <Stack gap="xl" align="center">
                         <PinInput 
-                          size="lg" 
-                          length={6} 
-                          type="number" 
-                          placeholder="" 
-                          value={otpCode}
-                          onChange={setOtpCode}
-                          autoFocus
+                          size="lg" length={6} type="number" placeholder="" value={otpCode} onChange={setOtpCode} autoFocus
                           styles={{ input: { height: rem(60), width: rem(50), fontSize: rem(24), fontWeight: 700 } }}
                         />
                         
-                        <Button 
-                          fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading}
-                          style={{ height: rem(54) }}
-                        >
-                          Verificar e Entrar
-                        </Button>
+                        <Button fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(54) }}>Verificar e Entrar</Button>
 
                         <Stack gap={5} align="center">
                           <Text size="xs" c="dimmed" fw={600}>
@@ -419,6 +430,31 @@ export default function Login() {
                           </Text>
                           <Anchor component="button" type="button" onClick={() => setAuthMode('login')} size="xs" fw={700} c="gray.5">Tentar outro método de acesso</Anchor>
                         </Stack>
+                      </Stack>
+                    </form>
+                 </Stack>
+              </motion.div>
+            )}
+
+            {authMode === 'sso' && (
+              <motion.div key="sso" variants={containerVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
+                 <Stack gap={rem(25)}>
+                    <Box>
+                      <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
+                        <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
+                      </UnstyledButton>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Single Sign-On</Title>
+                      <Text c="dimmed" fw={500}>Insira seu e-mail corporativo para prosseguir.</Text>
+                    </Box>
+
+                    <form onSubmit={handleCorporateSso}>
+                      <Stack gap="md">
+                        <TextInput 
+                          label="E-MAIL CORPORATIVO" placeholder="seu@empresa.com" leftSection={<IconBuildingSkyscraper size={16} />} radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)}
+                          styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(52), backgroundColor: '#f1f5f9' } }} 
+                        />
+                        <Button fullWidth size="md" radius="md" color="indigo" mt="md" type="submit" loading={formLoading} leftSection={<IconLock size={18} />} style={{ height: rem(54) }}>Entrar com Single Sign-On</Button>
+                        <Text size="xs" c="dimmed" ta="center" px="xl" mt="sm">Ao clicar, você será redirecionado para o portal de identidade da sua organização.</Text>
                       </Stack>
                     </form>
                  </Stack>
@@ -466,43 +502,6 @@ export default function Login() {
                       <Stack gap="sm">
                         <TextInput label="E-MAIL CADASTRADO" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
                         <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" type="submit" loading={formLoading} style={{ height: rem(48) }}>Enviar Instruções</Button>
-                      </Stack>
-                    </form>
-                 </Stack>
-              </motion.div>
-            )}
-            {authMode === 'sso' && (
-              <motion.div key="sso" variants={containerVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
-                 <Stack gap={rem(25)}>
-                    <Box>
-                      <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
-                        <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
-                      </UnstyledButton>
-                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Single Sign-On</Title>
-                      <Text c="dimmed" fw={500}>Insira seu e-mail corporativo para prosseguir.</Text>
-                    </Box>
-
-                    <form onSubmit={handleCorporateSso}>
-                      <Stack gap="md">
-                        <TextInput 
-                          label="E-MAIL CORPORATIVO" 
-                          placeholder="seu@empresa.com" 
-                          leftSection={<IconBuildingSkyscraper size={16} />} 
-                          radius="md" required 
-                          value={email} 
-                          onChange={(e) => setEmail(e.currentTarget.value)}
-                          styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(52), backgroundColor: '#f1f5f9' } }} 
-                        />
-                        <Button 
-                          fullWidth size="md" radius="md" color="indigo" mt="md" type="submit" loading={formLoading}
-                          leftSection={<IconLock size={18} />}
-                          style={{ height: rem(54) }}
-                        >
-                          Entrar com Single Sign-On
-                        </Button>
-                        <Text size="xs" c="dimmed" ta="center" px="xl" mt="sm">
-                           Ao clicar, você será redirecionado para o portal de identidade da sua organização.
-                        </Text>
                       </Stack>
                     </form>
                  </Stack>
