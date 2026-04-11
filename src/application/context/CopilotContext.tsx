@@ -33,9 +33,17 @@ export function CopilotProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timer);
   }, [promptValue]);
 
-  const executeCommand = async (command: string) => {
+  const executeCommand = async (command: string, skipAi: boolean = false) => {
     setLoading(true);
-    const suggestion = await aiAssistant.processSmartCommand(command);
+    
+    let suggestion: AiSuggestion | null = null;
+    
+    if (skipAi && currentSuggestion) {
+      // Se estamos pulando a IA, usamos o comando direto como o texto da sugestão
+      suggestion = { ...currentSuggestion, text: command };
+    } else {
+      suggestion = await aiAssistant.processSmartCommand(command);
+    }
     
     if (suggestion) {
       notifications.show({

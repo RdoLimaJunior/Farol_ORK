@@ -105,7 +105,6 @@ export function KRCard({ kr, initiatives, getActionsForInitiative, onShowEvidenc
       {/* HEADER DO KR (LEVEL 2) - PLATINUM SLIM STICKY */}
       <Box style={{ 
         position: 'sticky', 
-        position: 'sticky', 
         top: isPresentation ? rem(40) : rem(100), 
         zIndex: 35, 
         height: rem(110),

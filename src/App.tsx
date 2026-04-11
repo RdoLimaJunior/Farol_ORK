@@ -29,73 +29,71 @@ import CheckinFlow from './presentation/pages/CheckinFlow';
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <CopilotProvider>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/set-password" element={<SetPassword />} />
-            
-            <Route element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }>
-              <Route path="/" element={<Home />} />
-              <Route path="/overview" element={<Overview />} />
-              <Route path="/objective/:id" element={<OkrDetails />} />
-              <Route path="/strategy" element={
-                <OkrLevelPage 
-                  level="organizational" 
-                  title="Objetivos Estratégicos" 
-                  icon={IconTrophy} 
-                  color="farol-blue" 
-                  description="Visão de longo prazo e moonshots da companhia." 
-                />
-              } />
-              <Route path="/tactical" element={
-                <OkrLevelPage 
-                  level="departmental" 
-                  title="Key Results" 
-                  icon={IconTournament} 
-                  color="farol-blue" 
-                  description="Gestão de resultados-chave e métricas táticas da companhia." 
-                />
-              } />
+    <AuthProvider>
+      <CopilotProvider>
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/set-password" element={<SetPassword />} />
+          
+          <Route element={
+            <ProtectedRoute>
+              <AppLayout />
+            </ProtectedRoute>
+          }>
+            <Route path="/" element={<Home />} />
+            <Route path="/overview" element={<Overview />} />
+            <Route path="/objective/:id" element={<OkrDetails />} />
+            <Route path="/strategy" element={
+              <OkrLevelPage 
+                level="organizational" 
+                title="Objetivos Estratégicos" 
+                icon={IconTrophy} 
+                color="farol-blue" 
+                description="Visão de longo prazo e moonshots da companhia." 
+              />
+            } />
+            <Route path="/tactical" element={
+              <OkrLevelPage 
+                level="departmental" 
+                title="Key Results" 
+                icon={IconTournament} 
+                color="farol-blue" 
+                description="Gestão de resultados-chave e métricas táticas da companhia." 
+              />
+            } />
 
-              <Route path="/individual" element={
-                <OkrLevelPage 
-                  level="individual" 
-                  title="Meus OKRs" 
-                  icon={IconUserCircle} 
-                  color="farol-blue" 
-                  description="Contribuições individuais e metas táticas." 
-                />
-              } />
-              <Route path="/execution" element={<ActionPlans />} />
-              <Route path="/execution-overview" element={<Execution />} />
-              <Route path="/checkins" element={<Checkins />} />
-              <Route path="/feedbacks" element={<Analytics />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/engagement" element={<Engagement />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/members" element={<MembersManagement />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/settings/cycles" element={<CyclesManagement />} />
-              <Route path="/settings/permissions" element={<PermissionsManagement />} />
-              <Route path="/settings/structure" element={<Execution />} />
-              <Route path="/design-system" element={<DesignSystem />} />
-              <Route path="/ceremony" element={<CeremonyHub />} />
-              <Route path="/ceremony/checkin" element={<CheckinFlow />} />
-            </Route>
+            <Route path="/individual" element={
+              <OkrLevelPage 
+                level="individual" 
+                title="Meus OKRs" 
+                icon={IconUserCircle} 
+                color="farol-blue" 
+                description="Contribuições individuais e metas táticas." 
+              />
+            } />
+            <Route path="/execution" element={<ActionPlans />} />
+            <Route path="/execution-overview" element={<Execution />} />
+            <Route path="/checkins" element={<Checkins />} />
+            <Route path="/feedbacks" element={<Analytics />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/engagement" element={<Engagement />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/members" element={<MembersManagement />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/cycles" element={<CyclesManagement />} />
+            <Route path="/settings/permissions" element={<PermissionsManagement />} />
+            <Route path="/settings/structure" element={<Execution />} />
+            <Route path="/design-system" element={<DesignSystem />} />
+            <Route path="/ceremony" element={<CeremonyHub />} />
+            <Route path="/ceremony/checkin" element={<CheckinFlow />} />
+          </Route>
 
-            <Route path="*" element={<Navigate to="/login" replace />} />
-          </Routes>
-        </CopilotProvider>
-      </AuthProvider>
-    </BrowserRouter>
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </CopilotProvider>
+    </AuthProvider>
   );
 }
 

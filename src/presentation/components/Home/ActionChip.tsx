@@ -21,18 +21,14 @@ export function ActionChip({ label, icon: Icon, color = 'farol-blue', onClick, i
     >
       <UnstyledButton
         onClick={onClick}
-        style={(theme) => ({
+        style={{
           padding: `${rem(8)} ${rem(16)}`,
-          borderRadius: theme.radius.xl,
-          backgroundColor: 'light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))',
-          border: `1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))`,
+          borderRadius: "var(--mantine-radius-xl)",
+          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          border: "1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))",
           transition: 'all 0.2s ease',
-          '&:hover': {
-            borderColor: `var(--mantine-color-${color}-4)`,
-            backgroundColor: `light-dark(var(--mantine-color-${color}-0), rgba(var(--mantine-color-${color}-6-rgb), 0.1))`,
-            boxShadow: 'var(--mantine-shadow-sm)'
-          },
-        })}
+        }}
+        className="action-chip-button"
       >
         <Group gap="sm" wrap="nowrap">
           <ThemeIcon 

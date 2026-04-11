@@ -1,6 +1,7 @@
 export interface AiSuggestion {
   text: string;
   explanation?: string;
+  alternatives?: string[];
   action?: 'create' | 'checkin' | 'navigate';
   data?: any;
 }
@@ -10,9 +11,9 @@ export interface AgentInsight {
   type: 'alert' | 'success' | 'task' | 'insight';
   title: string;
   message: string;
-  actionLabel?: string;
   actionCommand?: string;
   color: string;
+  linkedKrs?: string[];
 }
 
 export class AiAssistantService {
@@ -28,37 +29,55 @@ export class AiAssistantService {
   }
 
   /**
-   * Refina o título de um objetivo para torná-lo mais estratégico/OKR compliant.
+   * Refina o título de um objetivo/KR para torná-lo mais estratégico/OKR compliant (v3.0).
    */
   async refineTitle(baseTitle: string): Promise<AiSuggestion> {
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Simula latência
+    await new Promise(resolve => setTimeout(resolve, 800)); // Latência reduzida para melhor UX
     
     const lowers = baseTitle.toLowerCase();
     
-    if (lowers.includes('vender') || lowers.includes('vendas')) {
-      return { 
-        text: 'Escalar a Receita Recurrente com Foco em Expansão de Mercado', 
-        explanation: 'Transformei um verbo de ação simples em um objetivo aspiracional qualitativo.' 
-      };
-    }
+    // Lógica Anti-Tarefa (ANVISA/UFRJ): Detecta verbos de Output e sugere Outcomes
+    const outputVerbs = ['fazer', 'executar', 'criar', 'capacitar', 'treinar', 'contratar', 'instalar', 'enviar', 'postar'];
+    const isOutput = outputVerbs.some(verb => lowers.includes(verb));
     
-    if (lowers.includes('contratar') || lowers.includes('pessoas')) {
-      return { 
-        text: 'Fortalecer o Capital Intelectual com Talentos de Alta Performance', 
-        explanation: 'Foco no impacto estratégico da contratação, não apenas na tarefa.' 
-      };
-    }
+    let mainSuggestion = '';
+    let explanation = '';
+    let alternatives: string[] = [];
 
-    if (lowers.includes('bug') || lowers.includes('erro') || lowers.includes('qualidade')) {
-      return { 
-        text: 'Elevar o Padrão de Confiabilidade e Estabilidade da Plataforma', 
-        explanation: 'Foco no valor entregue ao cliente (confiança) em vez de apenas correção.' 
-      };
+    if (lowers.includes('capacitar') || lowers.includes('treinar')) {
+      mainSuggestion = 'Atingir 100% de proficiência técnica no uso da nova estrutura de OKRs';
+      explanation = 'Detectei um foco em TAREFA (capacitar). Sugeri um RESULTADO (proficiência/adoção) seguindo a metodologia Farol v3.0.';
+      alternatives = [
+        'Garantir que 100% dos analistas realizem check-ins semanais com qualidade Ouro',
+        'Reduzir a zero o índice de erros técnicos na redação de novos KRs'
+      ];
+    } else if (lowers.includes('vender') || lowers.includes('vendas') || lowers.includes('receita')) {
+      mainSuggestion = 'Escalar a Receita Recurrente através da Expansão da Base de Clientes';
+      explanation = 'Objetivos devem ser inspiradores e qualitativos. Transformei a ação de vender em uma meta de crescimento estratégico.';
+      alternatives = [
+        'Consolidar a liderança de mercado aumentando o Market Share do segmento premium',
+        'Otimizar a Eficiência Comercial reduzindo o CAC em 15%'
+      ];
+    } else if (isOutput) {
+      mainSuggestion = `Garantir excelência e impacto estratégico em ${baseTitle.replace(/fazer|executar|criar/gi, '').trim()}`;
+      explanation = 'Evite verbos de ação pura. Foque no impacto ou na qualidade do que está sendo construído.';
+      alternatives = [
+        `Elevar o patamar de maturidade em ${baseTitle.trim()}`,
+        `Maximizar o retorno sobre o investimento em ${baseTitle.trim()}`
+      ];
+    } else {
+      mainSuggestion = `${baseTitle.charAt(0).toUpperCase() + baseTitle.slice(1)} com Foco em Impacto e Sustentabilidade`;
+      explanation = 'Adicionei um modificador de impacto para alinhar com o rigor da metodologia v3.0.';
+      alternatives = [
+        `Otimizar ${baseTitle} para alta performance institucional`,
+        `Garantir governança e rastreabilidade em ${baseTitle}`
+      ];
     }
 
     return { 
-      text: `${baseTitle.charAt(0).toUpperCase() + baseTitle.slice(1)} com Excelência e Impacto Estratégico`,
-      explanation: 'Adicionei um modificador de qualidade para tornar o objetivo mais ambicioso.'
+      text: mainSuggestion, 
+      explanation,
+      alternatives
     };
   }
 
@@ -105,36 +124,51 @@ export class AiAssistantService {
       {
         id: '1',
         type: 'alert',
-        title: 'KR em Risco',
-        message: 'O progresso de "Retenção de Clientes" está 15% abaixo do esperado para esta semana.',
-        actionLabel: 'Analisar Causas',
-        actionCommand: '+ analisar retenção',
-        color: 'red'
-      },
-      {
-        id: '2',
-        type: 'task',
-        title: 'Check-in Pendente',
-        message: 'Você tem 3 OKRs que não recebem atualização há mais de 7 dias.',
-        actionLabel: 'Fazer Todo Check-in',
-        actionCommand: '+ checkin pendentes',
-        color: 'orange'
-      },
-      {
-        id: '3',
-        type: 'success',
-        title: 'Meta Batida! 🚀',
-        message: 'O time de Vendas atingiu a meta trimestral 2 semanas antes do prazo.',
-        actionLabel: 'Ver Detalhes',
-        actionCommand: '/reports',
-        color: 'green'
+        title: 'KRs em Risco Imediato',
+        message: 'O KR "Reduzir Churn de 15% para 5%" está com desvio crítico (Off Track). A confiança caiu para 3/10.',
+        color: 'red',
+        actionLabel: 'Agir Agora',
+        actionCommand: '/tactical?filter=off-track',
+        linkedKrs: ['Retenção de Clientes Trimestral']
       },
       {
         id: '4',
+        type: 'alert',
+        title: 'Radar Humano (e-NPS)',
+        message: 'O clima do time de Engenharia caiu para 2.5/5 no último check-in. Risco de burnout ou desalinhamento.',
+        color: 'pink',
+        actionLabel: 'Apoiar Time',
+        actionCommand: '/engagement',
+        linkedKrs: ['Retenção de Talentos']
+      },
+      {
+        id: '2',
         type: 'insight',
-        title: 'Sugestão do Timoneiro',
-        message: 'Baseado no seu histórico, você performa melhor em tarefas de planejamento nas manhãs de terça.',
-        color: 'blue'
+        title: 'Alerta de Cadência (Stale)',
+        message: 'A Meta de "Expansão LATAM" não recebe check-in há 12 dias. O rigor metodológico exige atualizações semanais.',
+        color: 'orange',
+        actionLabel: 'Atualizar',
+        actionCommand: '/tactical?search=LATAM',
+        linkedKrs: ['Market Share LATAM', 'Novas Filiais']
+      },
+      {
+        id: '3',
+        type: 'insight',
+        title: 'Matriz de Confiança Baixa',
+        message: 'Embora o KR "Novas Contratações" esteja On Track, o time reportou Confiança 4. Possível gargalo futuro detectado.',
+        color: 'blue',
+        actionLabel: 'Ver FCA',
+        actionCommand: '/execution',
+        linkedKrs: ['Headcount Engenharia']
+      },
+      {
+        id: '5',
+        type: 'success',
+        title: 'Eficiência Ouro',
+        message: 'A Unidade de Financeiro atingiu 100% de adesão aos ritos desta semana com alta qualidade técnica em todos os FCAs.',
+        color: 'green',
+        actionLabel: 'Celebrar',
+        actionCommand: '/overview',
       }
     ];
   }
@@ -169,6 +203,42 @@ export class AiAssistantService {
 
     // Default: Refinement
     return this.refineTitle(input);
+  }
+
+  /**
+   * Retorna um resumo executivo contextual para o dashboard (2 linhas).
+   * Agora lê dados REAIS do sistema.
+   */
+  async getExecutiveSummary(): Promise<string> {
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+    try {
+      // Import dinâmico ou direto para evitar problemas de ciclo (mockStorage é simples)
+      const { getMockData } = await import('../../infrastructure/data/mockStorage');
+      const data = getMockData();
+      
+      if (!data || !data.krs) return "Bem-vindo ao Farol. Comece definindo seus primeiros Objetivos e Resultados-Chave.";
+
+      const krs = data.krs;
+      const onTrackCount = krs.filter((kr: any) => kr.status === 'on_track').length;
+      const onTrackPercent = Math.round((onTrackCount / krs.length) * 100);
+      
+      // Busca por um sucesso notável (progresso > 80%)
+      const successKr = krs.find((kr: any) => kr.progress >= 80);
+      if (successKr) {
+        return `Excelente progresso! A meta de '${successKr.title}' atingiu o marco crítico de ${successKr.progress}% antes do projetado.`;
+      }
+
+      // Busca por um risco crítico (off_track ou confiança baixa simulada)
+      const riskKr = krs.find((kr: any) => kr.status === 'at_risk' || kr.status === 'off_track');
+      if (riskKr) {
+        return `Atenção: O KR '${riskKr.title}' está com desvio e exige um plano de ação (FCA) imediato para recuperação.`;
+      }
+
+      return `Detectamos que ${onTrackPercent}% das metas estratégicas estão 'On Track'. Ótimo momento para revisar o estiramento (Stretch) da operação.`;
+    } catch (error) {
+      return "Analisando performance tática... Prepare-se para o ritual de check-in desta semana.";
+    }
   }
 }
 

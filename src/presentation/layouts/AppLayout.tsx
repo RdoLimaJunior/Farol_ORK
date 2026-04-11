@@ -32,7 +32,7 @@ import { EmailVerificationBanner } from '../components/EmailVerificationBanner';
 import { useMantineColorScheme, ActionIcon } from '@mantine/core';
 
 export function AppLayout() {
-  const [opened, { toggle }] = useDisclosure();
+  const [opened, { toggle }] = useDisclosure(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { profile, signOut } = useAuthContext();
@@ -94,7 +94,7 @@ export function AppLayout() {
       }}
       padding="md"
     >
-      <AppShell.Header style={{ borderBottom: '1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))' }}>
+      <AppShell.Header style={{ borderBottom: '1px solid var(--mantine-color-default-border)' }}>
         <Group h="100%" px="xl" justify="space-between">
           <Group gap="xl">
             <ActionIcon 
@@ -131,8 +131,8 @@ export function AppLayout() {
               style={{
                 padding: '10px 16px',
                 borderRadius: '12px',
-                background: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-6))',
-                border: '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
+                background: 'var(--mantine-color-default)',
+                border: '1px solid var(--mantine-color-default-border)',
                 width: rem(350),
                 transition: 'all 0.2s ease'
               }}
@@ -217,7 +217,7 @@ export function AppLayout() {
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="md" style={{ borderRight: '1px solid light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-4))', backgroundColor: 'light-dark(var(--mantine-color-white), var(--mantine-color-dark-8))' }}>
+      <AppShell.Navbar p="md" style={{ borderRight: '1px solid var(--mantine-color-default-border)', backgroundColor: 'var(--mantine-color-body)' }}>
         <AppShell.Section grow component={ScrollArea}>
 
           <Stack gap="xl">

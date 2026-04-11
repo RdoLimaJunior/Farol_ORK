@@ -33,8 +33,19 @@ body {
 }
 
 /* Ocultar elementos desnecessários em tela cheia se necessário */
+
 :fullscreen .mantine-AppShell-header,
 :fullscreen .mantine-AppShell-navbar {
   display: none !important;
+}
+
+.alt-suggestion-hover:hover {
+  background: light-dark(rgba(0,0,0,0.05), rgba(255,255,255,0.08)) !important;
+  border-color: var(--mantine-color-farol-blue-4) !important;
+  transform: translateX(4px);
+}
+
+.alt-suggestion-hover:active {
+  transform: scale(0.98);
 }
 

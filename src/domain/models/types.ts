@@ -60,6 +60,7 @@ export interface KRUpdate {
   comment: string;           // Obligatory justification
   evidenceUrls?: string[];   // For photos/videos
   testimonials?: string[];   // Team quotes
+  team_climate?: number;     // e-NPS 1-10 or 1-5
   updateDate: string;
 }
 

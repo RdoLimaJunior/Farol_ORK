@@ -9,13 +9,17 @@ export interface CheckInData {
   tenant_id: string;
   new_value: number;
   confidence_level: 'high' | 'medium' | 'low';
+  confidence_score?: number;
   comment: string;
+  manual_status_override?: string | null;
+  status_override_justification?: string;
+  team_climate?: number;
 }
 
 /**
  * Performs a check-in: 
  * 1. Creates a record in kr_updates
- * 2. Updates Key Result (value, progress, status)
+ * 2. Updates Key Result (value, progress, status if manual)
  * 3. Recalculates and updates Objective status/progress
  */
 export async function performCheckIn(data: CheckInData) {
@@ -60,10 +64,6 @@ export async function performCheckIn(data: CheckInData) {
       polarity: kr.polarity
     });
 
-    // Dummy start/end dates for status suggestion (MVP level)
-    const startDate = '2024-01-01';
-    const endDate = '2024-06-30';
-
     // 3. Save Update record
     const { error: updateInsertError } = await supabase
       .from('kr_updates')
@@ -74,19 +74,29 @@ export async function performCheckIn(data: CheckInData) {
         previous_value: previousValue,
         new_value: data.new_value,
         confidence_level: data.confidence_level,
-        comment: data.comment
+        confidence_score: data.confidence_score,
+        manual_status_override: data.manual_status_override,
+        status_override_justification: data.status_override_justification,
+        comment: data.comment,
+        team_climate: data.team_climate
       });
 
     if (updateInsertError) throw updateInsertError;
 
     // 4. Update the Key Result
+    const updatePayload: any = {
+      current_value: data.new_value,
+      progress: newProgress,
+      last_check_in: new Date().toISOString()
+    };
+
+    if (data.manual_status_override) {
+      updatePayload.status = data.manual_status_override;
+    }
+
     const { error: krUpdateError } = await supabase
       .from('key_results')
-      .update({
-        current_value: data.new_value,
-        progress: newProgress,
-        last_check_in: new Date().toISOString()
-      })
+      .update(updatePayload)
       .eq('id', data.kr_id);
 
     if (krUpdateError) throw krUpdateError;

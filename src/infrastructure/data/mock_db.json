@@ -10,9 +10,28 @@
       "ownerId": "user-lidia", 
       "progress": 32, 
       "status": "at_risk" 
+    },
+    { 
+      "id": "O3", 
+      "title": "O3 - Escalar a Eficiência Financeira e Expansão de Mercado (Receita Recurrente)", 
+      "ownerId": "user-lima", 
+      "progress": 82, 
+      "status": "on_track" 
     }
   ],
   "krs": [
+    { 
+      "id": "KR1-O3", 
+      "objectiveId": "O3", 
+      "title": "Atingir marco de Receita Recurrente (MRR) projetado", 
+      "ownerId": "user-lima",
+      "ownerName": "Lima Junior", 
+      "startValue": 50000,
+      "targetValue": 100000,
+      "currentValue": 92000, 
+      "progress": 84, 
+      "status": "on_track" 
+    },
     { 
       "id": "KR1-O2", 
       "objectiveId": "O2", 

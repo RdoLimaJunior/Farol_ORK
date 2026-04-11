@@ -6,21 +6,20 @@ import {
   Paper,
   Box,
   Button,
-  Alert,
   Group,
-  Modal,
-  Title
+  TextInput,
+  ActionIcon,
+  rem,
+  ThemeIcon,
+  Badge
 } from '@mantine/core';
-import { IconInfoCircle, IconFileImport, IconPlus } from '@tabler/icons-react';
-import { useEffect } from 'react';
-import { useDisclosure } from '@mantine/hooks';
+import { IconPlus, IconSparkles, IconTarget, IconArrowRight } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useObjectives } from '../../application/hooks/useObjectives';
 import { useKRs } from '../../application/hooks/useKRs';
 import { useOkrCalculation } from '../../application/hooks/useOkrCalculation';
 import { DetailedOkrList } from '../components/DetailedOkrList';
-import { ImportObjectivesModal } from '../components/ImportObjectivesModal';
-import { ObjectiveForm } from '../components/ObjectiveForm';
 import type { ObjectiveLevel } from '../../domain/models/types';
 import { PageHeader } from '../components/common/PageHeader';
 
@@ -33,88 +32,81 @@ interface OkrLevelPageProps {
 }
 
 export default function OkrLevelPage({ level, title, icon: Icon, color, description }: OkrLevelPageProps) {
-  const { objectives, loading: loadingObj, fetchObjectives, createObjective, importBatch } = useObjectives();
+  const { objectives, loading: loadingObj, fetchObjectives, createObjective } = useObjectives();
   const { krs, loading: loadingKR, fetchKRs } = useKRs();
-  const [importOpened, { open: openImport, close: closeImport }] = useDisclosure(false);
-  const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false);
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  // Detect ?criar=true from Spotlight to auto-open the create modal
-  useEffect(() => {
-    if (searchParams.get('criar') === 'true') {
-      openCreate();
-      setSearchParams({}, { replace: true });
-    }
-  }, [searchParams, openCreate, setSearchParams]);
-
+  const [quickValue, setQuickValue] = useState('');
+  
   useEffect(() => {
     fetchObjectives();
     fetchKRs();
   }, [fetchObjectives, fetchKRs]);
 
   const { enrichedObjectives } = useOkrCalculation(objectives, krs);
-  
-  // Filter by level
   const filteredObjectives = enrichedObjectives.filter(obj => obj.level === level);
-  // Parent objectives (for child alignment dropdown)
-  const parentOptions = enrichedObjectives
-    .filter(obj => !obj.parentObjectiveId)
-    .map(obj => ({ value: obj.id, label: obj.title }));
-
   const isLoading = loadingObj || loadingKR;
 
-  const handleCreate = async (values: any) => {
-    // Force the correct level from the current page context
-    await createObjective({ ...values, level });
-    closeCreate();
+  const handleQuickCreate = async () => {
+    if (!quickValue.trim()) return;
+    await createObjective({ title: quickValue, level });
+    setQuickValue('');
   };
 
   return (
-    <Container size="xl" py="xl">
-      <Stack gap="xl">
+    <Container size="xl" py="md">
+      <Stack gap="lg">
         <PageHeader 
-          title={title.split(' ')[0]}
-          highlightedText={title.split(' ').slice(1).join(' ')}
+          title={title}
+          highlightedText=""
           description={description}
           icon={Icon}
           color={color}
           rightSection={
-            <Group gap="sm">
-              <Button 
-                leftSection={<IconPlus size={18} />} 
-                color={color} 
-                size="md" 
-                radius="md"
-                onClick={openCreate}
-              >
-                {title === 'Key Results' ? 'Adicionar KR' : 'Criar OKR'}
-              </Button>
-
-              <Button 
-                leftSection={<IconFileImport size={18} />} 
-                variant="light" 
-                color={color} 
-                size="md" 
-                radius="md"
-                onClick={openImport}
-              >
-                Importar
-              </Button>
-            </Group>
+            <Badge variant="dot" color={color} size="lg" radius="sm">
+               {filteredObjectives.length} Objetivos Ativos
+            </Badge>
           }
         />
 
-        <Alert 
-          icon={<IconInfoCircle size={20} />} 
-          title={`Sobre ${title}`} 
-          color="farol-blue" 
-          radius="md" 
-          variant="light"
+        {/* QUICK CREATE BAR */}
+        <Paper 
+          p={6} 
+          radius="xl" 
+          withBorder 
+          shadow="sm"
+          style={{ 
+            background: 'var(--mantine-color-body)',
+            border: `1px solid var(--mantine-color-${color}-2)`
+          }}
         >
-          {level === 'organizational' && 'Eles definem o rumo de toda a companhia para o ciclo atual, focando em visão de longo prazo e moonshots.'}
-          {level === 'departmental' && 'Eles alinham as frentes de trabalho dos departamentos à estratégia global, desdobrando o impacto em áreas específicas.'}
-          {level === 'individual' && 'Eles representam a contribuição direta de cada talento para os objetivos táticos, garantindo protagonismo na execução.'}
-        </Alert>
+          <Group gap={0}>
+            <TextInput 
+              placeholder={`Digite um novo objetivo e pressione Enter...`}
+              variant="unstyled"
+              size="lg"
+              value={quickValue}
+              onChange={(e) => setQuickValue(e.currentTarget.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleQuickCreate()}
+              style={{ flex: 1 }}
+              px="md"
+              leftSection={
+                <ThemeIcon variant="light" color={color} radius="xl" size="md">
+                  <IconTarget size={18} />
+                </ThemeIcon>
+              }
+              styles={{ input: { fontWeight: 500, fontSize: rem(15) } }}
+            />
+            <Button 
+              color={color} 
+              radius="xl" 
+              size="md" 
+              onClick={handleQuickCreate}
+              disabled={!quickValue.trim()}
+              leftSection={<IconSparkles size={18} />}
+            >
+              Criar com IA
+            </Button>
+          </Group>
+        </Paper>
 
         {/* CONTENT */}
         <Box>
@@ -127,46 +119,44 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
           ) : filteredObjectives.length > 0 ? (
               <DetailedOkrList 
                 objectives={filteredObjectives} 
-                onAddObjective={openCreate} 
+                onAddObjective={() => {}} 
               />
           ) : (
-            <Paper withBorder p={50} radius="md" style={{ borderStyle: 'dashed', textAlign: 'center', backgroundColor: 'transparent' }}>
-              <Stack align="center" gap="md">
-                <Text fw={700} size="xl">Nenhum objetivo encontrado</Text>
-                <Text c="dimmed">Crie o primeiro objetivo de nível {title} usando o botão acima.</Text>
-                <Button leftSection={<IconPlus size={18} />} color={color} radius="md" onClick={openCreate}>
-                  {title === 'Key Results' ? 'Adicionar Primeiro KR' : 'Criar Primeiro OKR'}
-                </Button>
-
+            <Paper 
+              withBorder 
+              p={60} 
+              radius="lg" 
+              style={{ 
+                borderStyle: 'dashed', 
+                textAlign: 'center', 
+                background: 'rgba(0,0,0,0.02)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: rem(400)
+              }}
+            >
+              <Stack align="center" gap="lg" style={{ maxWidth: 400 }}>
+                <ThemeIcon size={80} radius={100} variant="light" color="gray">
+                  <IconTarget size={40} />
+                </ThemeIcon>
+                <Box>
+                  <Text fw={900} size="xl">Horizonte Estratégico Vazio</Text>
+                  <Text c="dimmed" size="sm">
+                    Ainda não definimos os marcos que guiarão o futuro da companhia. Utilize a barra superior para registrar o primeiro objetivo organizacional.
+                  </Text>
+                </Box>
+                <Group>
+                  <Button variant="light" color="gray" radius="md">Explorar Metodologia</Button>
+                  <Button rightSection={<IconArrowRight size={18} />} color={color} radius="md" onClick={() => document.querySelector('input')?.focus()}>
+                    Começar Agora
+                  </Button>
+                </Group>
               </Stack>
             </Paper>
           )}
         </Box>
       </Stack>
-
-      {/* Modal: Criar OKR */}
-      <Modal
-        opened={createOpened}
-        onClose={closeCreate}
-        title={<Title order={4}>{title === 'Key Results' ? 'Novo Resultado-Chave' : `Novo Objetivo — ${title}`}</Title>}
-
-        size="lg"
-        radius="md"
-        padding="xl"
-      >
-        <ObjectiveForm
-          initialValues={{ level }}
-          onSubmit={handleCreate}
-          loading={loadingObj}
-          parentObjectives={parentOptions}
-        />
-      </Modal>
-
-      <ImportObjectivesModal 
-        opened={importOpened} 
-        onClose={closeImport} 
-        onImport={importBatch} 
-      />
     </Container>
   );
 }
