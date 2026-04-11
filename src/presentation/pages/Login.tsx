@@ -206,11 +206,28 @@ export default function Login() {
                 </UnstyledButton>
               </Stack>
 
-              <Stack align="center" gap={5}>
-                <Text size="xs" c="dimmed" fw={600}>
-                  Novo por aqui? <Anchor component={Link} to="/register" fw={800} c="farol-blue.7">Crie sua conta</Anchor>
-                </Text>
-                <Anchor component={Link} to="/forgot-password" size="xs" fw={700} c="gray.5">Esqueci minha senha</Anchor>
+              <Stack gap="md" align="center" mt="md">
+                <Divider w="100%" opacity={0.5} />
+                
+                <Group justify="space-between" w="100%">
+                  <Stack gap={2}>
+                    <Text size="xs" c="dimmed" fw={700} style={{ letterSpacing: rem(0.5) }}>NOVO POR AQUI?</Text>
+                    <Anchor component={Link} to="/register" size="sm" fw={800} c="farol-blue">
+                      Crie sua conta agora
+                    </Anchor>
+                  </Stack>
+
+                  <Button 
+                    component={Link} 
+                    to="/forgot-password" 
+                    variant="subtle" 
+                    color="gray" 
+                    size="compact-xs" 
+                    styles={{ label: { fontSize: rem(11), fontWeight: 700 } }}
+                  >
+                    Esqueci minha senha
+                  </Button>
+                </Group>
               </Stack>
             </Stack>
           </motion.div>
