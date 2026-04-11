@@ -114,20 +114,35 @@ export default function Login() {
     </UnstyledButton>
   );
 
+  const [gradientPos, setGradientPos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    // Generative initial position
+    setGradientPos({ 
+      x: Math.floor(Math.random() * 100), 
+      y: Math.floor(Math.random() * 100) 
+    });
+  }, []);
+
   return (
     <Box style={{ height: '100vh', display: 'flex', overflow: 'hidden', backgroundColor: '#f8fafc' }}>
-      {/* BRANDING SIDE */}
+      {/* BRANDING SIDE - Generative Mesh Gradient */}
       <Box visibleFrom="md" style={{ flex: '1', position: 'relative', overflow: 'hidden', backgroundColor: '#001219' }}>
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          transition={{ duration: 1.5 }}
-          style={{
-            position: 'absolute', inset: 0,
-            backgroundImage: 'url("/strategic_lighthouse_login_bg.png")',
-            backgroundSize: 'cover', backgroundPosition: 'center',
+          animate={{ 
+            background: [
+              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
+              `radial-gradient(circle at ${100 - gradientPos.x}% ${100 - gradientPos.y}%, rgba(3, 169, 244, 0.2) 0%, rgba(0, 18, 25, 1) 70%)`,
+              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
+            ]
           }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: 'absolute', inset: 0 }}
         />
+        
+        {/* Subtle noise/grid texture */}
+        <Box style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%2 noiseFilter)'/%3E%3C/svg%3E")` }} />
+
         <Stack p={rem(60)} justify="center" h="100%" style={{ position: 'relative', zIndex: 10 }}>
           <Title order={1} c="white" style={{ fontSize: rem(48), fontWeight: 900, letterSpacing: rem(-1) }}>FAROL</Title>
           <Box mt="lg" style={{ borderLeft: '3px solid var(--mantine-color-cyan-5)', paddingLeft: rem(25) }}>

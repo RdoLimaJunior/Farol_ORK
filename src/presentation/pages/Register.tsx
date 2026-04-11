@@ -28,6 +28,14 @@ import {
 export default function Register() {
   const navigate = useNavigate();
   const [formLoading, setFormLoading] = useState(false);
+  const [gradientPos, setGradientPos] = useState({ x: 30, y: 30 });
+
+  useState(() => {
+    setGradientPos({ 
+      x: Math.floor(Math.random() * 100), 
+      y: Math.floor(Math.random() * 100) 
+    });
+  });
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +55,7 @@ export default function Register() {
         backgroundColor: '#f8fafc',
       }}
     >
-      {/* LADO ESQUERDO (Reutilizando branding) */}
+      {/* LADO ESQUERDO (Mesh Gradient Generativo) */}
       <Box 
         visibleFrom="md"
         style={{ 
@@ -57,16 +65,18 @@ export default function Register() {
           backgroundColor: '#001219',
         }}
       >
-        <Box 
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundImage: 'url("/strategic_lighthouse_login_bg.png")',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            opacity: 0.4,
+        <motion.div
+           animate={{ 
+            background: [
+              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
+              `radial-gradient(circle at ${100 - gradientPos.x}% ${100 - gradientPos.y}%, rgba(3, 169, 244, 0.2) 0%, rgba(0, 18, 25, 1) 70%)`,
+              `radial-gradient(circle at ${gradientPos.x}% ${gradientPos.y}%, rgba(1, 87, 155, 0.4) 0%, rgba(0, 18, 25, 1) 70%)`,
+            ]
           }}
+          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          style={{ position: 'absolute', inset: 0 }}
         />
+        <Box style={{ position: 'absolute', inset: 0, opacity: 0.02, backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%2 noiseFilter)'/%3E%3C/svg%3E")` }} />
         <Stack p={rem(60)} justify="center" h="100%" style={{ position: 'relative', zIndex: 10 }}>
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
              <Title order={2} c="white" style={{ fontSize: rem(32), fontWeight: 900 }}>FAROL</Title>
