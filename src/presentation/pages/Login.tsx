@@ -14,6 +14,7 @@ import {
   UnstyledButton,
   Checkbox,
   SimpleGrid,
+  PinInput,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -44,7 +45,7 @@ const WelcomeTexts = [
   "Resultado Real."
 ];
 
-type AuthMode = 'login' | 'register' | 'forgot' | 'magic';
+type AuthMode = 'login' | 'register' | 'forgot' | 'magic' | 'otp';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ export default function Login() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otpCode, setOtpCode] = useState('');
   const [formLoading, setFormLoading] = useState(false);
   const [gradientPos, setGradientPos] = useState({ x: 0, y: 0 });
 
@@ -132,13 +134,37 @@ export default function Login() {
     setTimeout(() => {
       setFormLoading(false);
       notifications.show({
-        title: 'Link Mágico Enviado!',
-        message: `Verifique sua caixa de entrada em ${email || 'seu e-mail'}.`,
+        title: 'Token Enviado',
+        message: `Insira o código enviado para ${email || 'seu e-mail'}.`,
         color: 'cyan',
-        icon: <IconSparkles size={18} />,
+        icon: <IconSend size={18} />,
       });
-      setAuthMode('login');
+      setAuthMode('otp');
     }, 1800);
+  };
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setTimeout(() => {
+      setFormLoading(false);
+      if (otpCode === '123456' || otpCode === '000000') {
+        notifications.show({
+          title: 'Acesso Verificado',
+          message: 'Tokens conferem. Iniciando sessão...',
+          color: 'green',
+          icon: <IconCheck size={18} />,
+        });
+        navigate('/');
+      } else {
+        notifications.show({
+          title: 'Token Inválido',
+          message: 'O código inserido não confere ou expirou.',
+          color: 'red',
+          icon: <IconX size={18} />,
+        });
+      }
+    }, 1200);
   };
 
   const handleSso = async (provider: 'google' | 'microsoft') => {
@@ -278,7 +304,7 @@ export default function Login() {
                       />
                       <Group justify="space-between">
                          <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
-                         <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue">Acessar sem senha</Anchor>
+                         <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue">Acesso Verificado</Anchor>
                       </Group>
                       <Button fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48), marginTop: rem(10) }}>Entrar</Button>
                     </Stack>
@@ -308,15 +334,15 @@ export default function Login() {
                       <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
                         <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
                       </UnstyledButton>
-                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Link Mágico</Title>
-                      <Text c="dimmed" fw={500}>Acesse sua conta sem precisar de senha.</Text>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Acesso Verificado</Title>
+                      <Text c="dimmed" fw={500}>Identificação segura via Token de Segurança.</Text>
                     </Box>
 
                     <form onSubmit={handleMagic}>
                       <Stack gap="md">
                         <TextInput 
-                          label="E-MAIL CADASTRADO" 
-                          placeholder="seu@email.com" 
+                          label="E-MAIL CORPORATIVO" 
+                          placeholder="seu@empresa.com" 
                           leftSection={<IconMail size={16} />} 
                           radius="md" required 
                           value={email} 
@@ -325,13 +351,53 @@ export default function Login() {
                         />
                         <Button 
                           fullWidth size="md" radius="md" color="cyan" mt="md" type="submit" loading={formLoading}
-                          leftSection={<IconSparkles size={18} />}
+                          leftSection={<IconSend size={18} />}
                           style={{ height: rem(54) }}
                         >
-                          Receber meu Link Mágico
+                          Solicitar Token de Acesso
                         </Button>
                         <Text size="xs" c="dimmed" ta="center" px="xl">
-                           Enviaremos um link de acesso instantâneo para sua caixa de entrada.
+                           Enviaremos um código de 6 dígitos para validar sua identidade.
+                        </Text>
+                      </Stack>
+                    </form>
+                 </Stack>
+              </motion.div>
+            )}
+
+            {authMode === 'otp' && (
+              <motion.div key="otp" variants={containerVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
+                 <Stack gap={rem(25)} align="center">
+                    <Box w="100%">
+                      <UnstyledButton onClick={() => setAuthMode('magic')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
+                        <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR</Text>
+                      </UnstyledButton>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7" ta="center">Validar Token</Title>
+                      <Text c="dimmed" fw={500} ta="center">Insira o código enviado para o seu e-mail.</Text>
+                    </Box>
+
+                    <form onSubmit={handleVerifyOtp} style={{ width: '100%' }}>
+                      <Stack gap="xl" align="center">
+                        <PinInput 
+                          size="lg" 
+                          length={6} 
+                          type="number" 
+                          placeholder="" 
+                          value={otpCode}
+                          onChange={setOtpCode}
+                          autoFocus
+                          styles={{ input: { height: rem(60), width: rem(50), fontSize: rem(24), fontWeight: 700 } }}
+                        />
+                        
+                        <Button 
+                          fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading}
+                          style={{ height: rem(54) }}
+                        >
+                          Verificar e Entrar
+                        </Button>
+
+                        <Text size="xs" c="dimmed" fw={600}>
+                          Não recebeu o código? <Anchor component="button" type="button" onClick={() => handleMagic({ preventDefault: () => {} } as any)} fw={800} c="farol-blue">Reenviar</Anchor>
                         </Text>
                       </Stack>
                     </form>
