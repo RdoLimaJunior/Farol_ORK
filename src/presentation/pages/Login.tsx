@@ -124,7 +124,7 @@ export default function Login() {
           transition={{ duration: 1.5 }}
           style={{
             position: 'absolute', inset: 0,
-            backgroundImage: 'url("/strategic_lighthouse_login_bg_1775921200751.png")',
+            backgroundImage: 'url("/strategic_lighthouse_login_bg.png")',
             backgroundSize: 'cover', backgroundPosition: 'center',
           }}
         />
