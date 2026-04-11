@@ -8,27 +8,36 @@ import {
   Stack, 
   Box,
   Divider,
-  Grid,
+  Group,
   Anchor,
+  rem,
+  Container,
 } from '@mantine/core';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { IconArrowRight, IconLock, IconMail, IconBrandGoogle } from '@tabler/icons-react';
+import { 
+  IconArrowRight, 
+  IconLock, 
+  IconMail, 
+  IconBrandGoogle, 
+  IconBuildingSkyscraper,
+  IconBrandWindows,
+  IconFingerprint
+} from '@tabler/icons-react';
 import { useAuthContext } from '../../application/context/AuthContext';
 
 const WelcomeTexts = [
-  "Estratégia em Fluxo.",
-  "Decisões orientadas por dados.",
-  "Seu norte para o sucesso.",
-  "Onde OKRs ganham vida."
+  "Direção Estratégica.",
+  "Decisões Orientadas por Dados.",
+  "Sua Bússola Corporativa.",
+  "Onde OKRs Ganham Vida."
 ];
 
 export default function Login() {
   const navigate = useNavigate();
   const { signIn, signInWithGoogle, isAuthenticated } = useAuthContext();
 
-  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
   const [welcomeIndex, setWelcomeIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -45,16 +54,16 @@ export default function Login() {
     }
   }, [isAuthenticated, navigate]);
 
-  // Efeito Typewriter
+  // Typewriter Effect
   useEffect(() => {
     const currentFullText = WelcomeTexts[welcomeIndex];
-    const typingSpeed = isDeleting ? 30 : 70;
+    const typingSpeed = isDeleting ? 30 : 80;
     
     const timer = setTimeout(() => {
       if (!isDeleting) {
         setDisplayText(currentFullText.slice(0, displayText.length + 1));
         if (displayText.length + 1 === currentFullText.length) {
-          setTimeout(() => setIsDeleting(true), 2000);
+          setTimeout(() => setIsDeleting(true), 2500);
         }
       } else {
         setDisplayText(currentFullText.slice(0, displayText.length - 1));
@@ -68,19 +77,6 @@ export default function Login() {
     return () => clearTimeout(timer);
   }, [displayText, isDeleting, welcomeIndex]);
 
-  // Lighthouse Beam mouse effect
-  const handleMouseMove = useCallback((e: React.MouseEvent | MouseEvent) => {
-    const x = (e.clientX / window.innerWidth) * 100;
-    const y = (e.clientY / window.innerHeight) * 100;
-    setMousePos({ x, y });
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [handleMouseMove]);
-
-  // Login handler
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormLoading(true);
@@ -96,317 +92,211 @@ export default function Login() {
     }
   };
 
-
-
   return (
     <Box 
-      className="split-login-container"
       style={{ 
         minHeight: '100vh', 
-        width: '100vw',
-        background: '#001219',
-        overflowX: 'hidden',
-        overflowY: 'auto',
-        position: 'relative',
         display: 'flex',
+        backgroundColor: '#f8fafc', // Light slate bg
       }}
     >
-      <style>
-        {`
-          .split-login-container {
-            flex-direction: column;
-          }
-          .marketing-side {
-            width: 100%;
-            min-height: 40vh;
-            padding: 40px;
-          }
-          .auth-side {
-            width: 100%;
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(25px);
-            padding: 20px;
-            min-height: 60vh;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-          }
-          .bg-image-fixed {
-            width: 100%;
-          }
-          .beam-effect-fixed {
-            width: 100%;
-          }
-          .auth-paper {
-            background-color: transparent;
-          }
-          .auth-title { color: #fff; }
-          .auth-text { color: rgba(255, 255, 255, 0.7); }
-          .auth-label { color: rgba(255, 255, 255, 0.7); }
-          .auth-input { 
-            background-color: rgba(255, 255, 255, 0.9) !important; 
-            color: #000 !important;
-          }
-
-          @media (min-width: 992px) {
-            .split-login-container {
-              flex-direction: row;
-            }
-            .marketing-side {
-              width: 55%;
-              height: 100vh;
-              padding: 80px;
-            }
-            .auth-side {
-              width: 45%;
-              height: 100vh;
-              background-color: #f8f9fa;
-              backdrop-filter: none;
-              padding: 60px;
-              border-top: none;
-              border-left: 1px solid rgba(0, 0, 0, 0.05);
-            }
-            .bg-image-fixed {
-              width: 55%;
-            }
-            .beam-effect-fixed {
-              width: 55%;
-            }
-            .auth-title { color: #1A1B1E; }
-            .auth-text { color: #909296; }
-            .auth-label { color: #495057; }
-            .auth-input { 
-              background-color: #fff !important; 
-              color: #000 !important;
-              border-color: #ced4da !important;
-            }
-            .copyright-text { display: block !important; }
-          }
-        `}
-      </style>
-
-      {/* Background Image */}
+      {/* LEFT SIDE: BRANDING & MARKETING */}
       <Box 
-        className="bg-image-fixed"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '100%',
-          backgroundImage: 'url("/bg-farol.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          opacity: 0.25,
-          filter: 'brightness(0.5) contrast(1.2)',
-          zIndex: 0,
-        }}
-      />
-
-      {/* Lighthouse Beam Effect */}
-      <Box 
-        className="beam-effect-fixed"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          height: '100%',
-          zIndex: 1,
-          background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(3, 169, 244, 0.2) 0%, rgba(0, 18, 25, 0.8) 60%)`,
-          mixBlendMode: 'screen',
-          pointerEvents: 'none',
-        }} 
-      />
-
-      <Box 
+        visibleFrom="md"
         style={{ 
-          display: 'flex', 
-          width: '100%', 
-          position: 'relative', 
-          zIndex: 2,
-          flexDirection: 'inherit',
+          flex: '1.2',
+          position: 'relative',
+          overflow: 'hidden',
+          backgroundColor: '#001219',
         }}
       >
-        {/* LADO ESQUERDO: Branding */}
         <Box 
-          className="marketing-side"
-          style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            justifyContent: 'center',
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'url("/strategic_lighthouse_login_bg_1775921200751.png")',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            opacity: 0.6,
           }}
-        >
-          <Stack gap="xl">
-            <Box>
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-              >
-                <Title 
-                  style={{ 
-                    fontSize: 'clamp(48px, 10vw, 96px)', 
-                    color: 'white', 
-                    letterSpacing: '-3px',
-                    fontWeight: 900,
-                    lineHeight: 1,
-                    textShadow: '0 0 30px rgba(3, 169, 244, 0.4)'
-                  }}
-                >
-                  FAROL
-                </Title>
-              </motion.div>
-              
-              <motion.div
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 1, delay: 0.5 }}
-                style={{ 
-                  height: '4px', 
-                  background: 'linear-gradient(90deg, #03A9F4, transparent)', 
-                  width: '180px', 
-                  marginTop: '10px',
-                  transformOrigin: 'left'
-                }}
-              />
-            </Box>
-
-            <Box style={{ minHeight: '100px' }}>
-              <Title order={2} c="cyan.1" style={{ fontWeight: 400, opacity: 0.9, fontSize: 'clamp(20px, 4.5vw, 42px)', display: 'inline-flex', alignItems: 'center' }}>
-                {displayText}
-                <motion.span
-                  animate={{ opacity: [0, 1, 0] }}
-                  transition={{ repeat: Infinity, duration: 0.8 }}
-                  style={{ 
-                    marginLeft: '8px', 
-                    width: '4px', 
-                    height: '1em', 
-                    background: '#03A9F4', 
-                    display: 'inline-block' 
-                  }}
-                />
-              </Title>
-            </Box>
-
-            <Text c="white" opacity={0.7} maw={520} size="xl" visibleFrom="sm" style={{ lineHeight: 1.6 }}>
-              A plataforma definitiva para gerenciar sua estratégia com agilidade e clareza. 
-              Navegue pelos seus OKRs com precisão estratégica e foco total em resultados.
-            </Text>
-          </Stack>
-        </Box>
-
-        {/* LADO DIREITO: Auth */}
+        />
         <Box 
-          className="auth-side"
-          style={{ 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(135deg, rgba(1, 87, 155, 0.8) 0%, rgba(0, 18, 25, 0.9) 100%)',
           }}
+        />
+
+        <Stack 
+          p={rem(80)} 
+          justify="center" 
+          h="100%" 
+          style={{ position: 'relative', zIndex: 10 }}
         >
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ width: '100%', maxWidth: '420px' }}
+            transition={{ duration: 0.8 }}
           >
-            <Paper 
-              radius="lg" 
-              p={{ base: 25, sm: 40 }} 
-              className="auth-paper"
-            >
-              <Stack gap="xs" mb="xl">
-                <Title order={3} className="auth-title" ta="center" fw={700} size="h3">Acesse o Cockpit</Title>
-                <Text className="auth-text" size="sm" ta="center">
-                  Informe suas credenciais para continuar
-                </Text>
-              </Stack>
-              
-              <form onSubmit={handleLogin}>
-                <Stack gap="md">
-                  <TextInput 
-                    label={<Text className="auth-label" size="xs" mb={4} fw={700}>E-MAIL</Text>}
-                    placeholder="seu@farol.com"
-                    leftSection={<IconMail size={18} color="#03A9F4" />}
-                    variant="filled"
-                    size="md"
-                    value={email}
-                    onChange={(e) => setEmail(e.currentTarget.value)}
-                    required
-                    className="auth-input"
-                  />
+            <Group gap="xs">
+              <IconFingerprint size={42} color="white" stroke={2.5} />
+              <Title order={1} c="white" style={{ fontSize: rem(64), fontWeight: 900, letterSpacing: rem(-2) }}>
+                FAROL
+              </Title>
+            </Group>
+            
+            <Box mt="xl" style={{ borderLeft: '4px solid var(--mantine-color-cyan-5)', paddingLeft: rem(30) }}>
+              <Title order={2} c="white" style={{ fontSize: rem(42), fontWeight: 400, opacity: 0.9 }}>
+                {displayText}
+                <motion.span
+                  animate={{ opacity: [0, 1, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  style={{ marginLeft: rem(8), width: rem(3), height: '1em', background: 'var(--mantine-color-cyan-4)', display: 'inline-block' }}
+                />
+              </Title>
+              <Text c="white" opacity={0.6} maw={500} size="lg" mt="md" fw={500}>
+                Navegue pela estratégia corporativa com clareza absoluta e alinhamento total.
+              </Text>
+            </Box>
+          </motion.div>
+        </Stack>
 
-                  <PasswordInput 
-                    label={<Text className="auth-label" size="xs" mb={4} fw={700}>SENHA</Text>}
-                    placeholder="••••••••"
-                    leftSection={<IconLock size={18} color="#03A9F4" />}
-                    variant="filled"
-                    size="md"
-                    value={password}
-                    onChange={(e) => setPassword(e.currentTarget.value)}
-                    required
-                    className="auth-input"
-                  />
+        <Text 
+          style={{ position: 'absolute', bottom: rem(40), left: rem(80), color: 'rgba(255,255,255,0.3)', fontSize: rem(10), fontWeight: 700, letterSpacing: rem(1) }}
+        >
+          © 2026 FAROL ESTRATÉGIA — GESTÃO INTELIGENTE DE OKRs
+        </Text>
+      </Box>
 
+      {/* RIGHT SIDE: AUTH FORM */}
+      <Box 
+        style={{ 
+          flex: '1',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: rem(40),
+        }}
+      >
+        <Container size="xs" w="100%" p={0}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Paper radius="xl" p={0} bg="transparent">
+              <Stack gap="xl">
+                <Box>
+                  <Title order={2} fw={900} size={rem(32)} c="dark.6">
+                    Acesso ao Cockpit
+                  </Title>
+                  <Text c="dimmed" fw={500} mt={4}>
+                    Bem-vindo de volta! Identifique-se para continuar.
+                  </Text>
+                </Box>
+
+                <form onSubmit={handleLogin}>
+                  <Stack gap="md">
+                    <TextInput 
+                      label="E-MAIL CORPORATIVO"
+                      placeholder="seu.nome@empresa.com"
+                      leftSection={<IconMail size={18} stroke={2} />}
+                      size="md"
+                      radius="md"
+                      value={email}
+                      onChange={(e) => setEmail(e.currentTarget.value)}
+                      required
+                      styles={{
+                        label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(6), color: 'var(--mantine-color-gray-6)' },
+                        input: { backgroundColor: 'white', border: '1px solid var(--mantine-color-gray-3)' }
+                      }}
+                    />
+
+                    <PasswordInput 
+                      label="SENHA DE ACESSO"
+                      placeholder="••••••••"
+                      leftSection={<IconLock size={18} stroke={2} />}
+                      size="md"
+                      radius="md"
+                      value={password}
+                      onChange={(e) => setPassword(e.currentTarget.value)}
+                      required
+                      styles={{
+                        label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(6), color: 'var(--mantine-color-gray-6)' },
+                        input: { backgroundColor: 'white', border: '1px solid var(--mantine-color-gray-3)' }
+                      }}
+                    />
+
+                    <Button 
+                      fullWidth 
+                      size="lg" 
+                      radius="md" 
+                      color="farol-blue"
+                      type="submit"
+                      loading={formLoading}
+                      rightSection={<IconArrowRight size={20} />}
+                      style={{ height: rem(56), boxShadow: 'var(--mantine-shadow-md)' }}
+                    >
+                      Entrar no Sistema
+                    </Button>
+                  </Stack>
+                </form>
+
+                <Divider 
+                  label="OU ACESSE VIA SSO" 
+                  labelPosition="center" 
+                  c="dimmed" 
+                  styles={{ label: { fontSize: rem(10), fontWeight: 700 } }} 
+                />
+
+                <Stack gap="sm">
+                  <Group grow>
+                    <Button 
+                      variant="default" 
+                      radius="md" 
+                      size="md"
+                      leftSection={<IconBrandGoogle size={20} color="#EA4335" />}
+                      onClick={signInWithGoogle}
+                      style={{ border: '1px solid var(--mantine-color-gray-3)' }}
+                    >
+                      Google
+                    </Button>
+                    <Button 
+                      variant="default" 
+                      radius="md" 
+                      size="md"
+                      leftSection={<IconBrandWindows size={20} color="#00A4EF" />}
+                      style={{ border: '1px solid var(--mantine-color-gray-3)' }}
+                    >
+                      Microsoft
+                    </Button>
+                  </Group>
                   <Button 
-                    fullWidth 
-                    size="md" 
-                    mt="md" 
-                    color="cyan"
-                    type="submit"
-                    loading={formLoading}
-                    rightSection={<IconArrowRight size={18} />}
-                    style={{ 
-                      height: '54px',
-                      fontSize: '16px',
-                      boxShadow: '0 8px 25px rgba(3, 169, 244, 0.4)'
-                    }}
+                    variant="light" 
+                    color="gray"
+                    radius="md" 
+                    size="md"
+                    leftSection={<IconBuildingSkyscraper size={20} />}
+                    style={{ border: '1px solid var(--mantine-color-gray-2)' }}
                   >
-                    Iniciar Sessão
+                    SSO Corporativo (SAML/ADFS)
                   </Button>
                 </Stack>
-              </form>
 
-              <Divider my="xl" label={<Text size="xs" c="dimmed">ou entre com</Text>} labelPosition="center" />
-              
-              <Grid gutter="sm">
-                <Grid.Col span={12}>
-                  <Button 
-                    fullWidth 
-                    variant="outline" 
-                    color="gray" 
-                    size="md" 
-                    radius="md"
-                    leftSection={<IconBrandGoogle size={20} />}
-                    onClick={signInWithGoogle}
-                    style={{ height: '48px' }}
-                  >
-                    Continuar com Google
-                  </Button>
-                </Grid.Col>
-              </Grid>
-
-              <Stack align="center" mt="xl" gap="sm">
-                <Anchor component={Link} to="/forgot-password" size="xs" c="cyan.6" fw={600}>Esqueceu sua senha?</Anchor>
-                <Text size="xs" c="dimmed">Powered by Google AI & Supabase</Text>
+                <Stack align="center" gap="xs">
+                  <Anchor component={Link} to="/forgot-password" size="sm" fw={700} c="farol-blue.6">
+                    Problemas com sua senha?
+                  </Anchor>
+                  <Text size="xs" c="dimmed" fw={600}>
+                    Tecnologia de Segurança FAROL v3.2
+                  </Text>
+                </Stack>
               </Stack>
             </Paper>
           </motion.div>
-        </Box>
+        </Container>
       </Box>
-
-      {/* Copyright discreto */}
-      <Text 
-        className="copyright-text"
-        style={{ 
-          position: 'fixed', 
-          bottom: '20px', 
-          left: '40px', 
-          color: 'rgba(255,255,255,0.4)', 
-          fontSize: '10px',
-          zIndex: 3,
-          display: 'none',
-        }}
-      >
-        © 2026 FAROL ESTRATÉGIA. TODOS OS DIREITOS RESERVADOS.
-      </Text>
     </Box>
   );
 }
