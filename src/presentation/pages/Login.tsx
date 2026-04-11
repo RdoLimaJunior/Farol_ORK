@@ -22,13 +22,17 @@ import {
   IconLock, 
   IconMail, 
   IconBrandGoogle, 
-  IconBuildingSkyscraper,
+  IconBuildingSkyscraper, 
   IconBrandWindows,
   IconFingerprint,
   IconArrowLeft,
   IconUser,
-  IconBuilding
+  IconBuilding,
+  IconCheck,
+  IconX,
+  IconInfoCircle
 } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../../application/context/AuthContext';
 
 const WelcomeTexts = [
@@ -57,7 +61,19 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) navigate('/', { replace: true });
-  }, [isAuthenticated, navigate]);
+
+    // Show hint for mock credentials
+    if (authMode === 'login') {
+      notifications.show({
+        id: 'login-hint',
+        title: 'Modo Demonstração',
+        message: 'Utilize admin / admin para acessar o sistema.',
+        color: 'blue',
+        icon: <IconInfoCircle size={18} />,
+        autoClose: 5000,
+      });
+    }
+  }, [isAuthenticated, navigate, authMode]);
 
   useEffect(() => {
     setGradientPos({ x: Math.floor(Math.random() * 100), y: Math.floor(Math.random() * 100) });
@@ -86,12 +102,62 @@ export default function Login() {
     setFormLoading(true);
     try {
       const { error } = await signIn(email, password);
-      if (!error) navigate('/');
+      if (error) {
+        notifications.show({
+          title: 'Erro de Login',
+          message: 'Usuário ou senha incorretos.',
+          color: 'red',
+          icon: <IconX size={18} />,
+        });
+      } else {
+        notifications.show({
+          title: 'Acesso Permitido',
+          message: 'Carregando cockpit estratégico...',
+          color: 'green',
+          icon: <IconCheck size={18} />,
+        });
+        navigate('/');
+      }
     } catch (err) {
-      console.error('Login error:', err);
+      notifications.show({
+        title: 'Erro de Conexão',
+        message: 'Não foi possível contatar o servidor de autenticação.',
+        color: 'red',
+        icon: <IconX size={18} />,
+      });
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setTimeout(() => {
+      setFormLoading(false);
+      notifications.show({
+        title: 'Solicitação Enviada',
+        message: 'Sua conta está em análise comercial.',
+        color: 'green',
+        icon: <IconCheck size={18} />,
+      });
+      setAuthMode('login');
+    }, 1500);
+  };
+
+  const handleForgot = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setTimeout(() => {
+      setFormLoading(false);
+      notifications.show({
+        title: 'E-mail Enviado',
+        message: 'Instruções de recuperação enviadas com sucesso.',
+        color: 'blue',
+        icon: <IconMail size={18} />,
+      });
+      setAuthMode('login');
+    }, 1500);
   };
 
   const SsoButton = ({ icon: Icon, label, color, onClick }: any) => (
@@ -214,15 +280,15 @@ export default function Login() {
                       <Text c="dimmed" fw={500}>Inicie sua jornada estratégica.</Text>
                     </Box>
 
-                    <form onSubmit={(e) => e.preventDefault()}>
+                    <form onSubmit={handleRegister}>
                       <Stack gap="sm">
                         <SimpleGrid cols={2} gap="sm">
-                           <TextInput label="NOME" placeholder="João Silva" leftSection={<IconUser size={16} />} radius="md" styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
-                           <TextInput label="EMPRESA" placeholder="ACME Corp" leftSection={<IconBuilding size={16} />} radius="md" styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
+                           <TextInput label="NOME" placeholder="João Silva" leftSection={<IconUser size={16} />} radius="md" required styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
+                           <TextInput label="EMPRESA" placeholder="ACME Corp" leftSection={<IconBuilding size={16} />} radius="md" required styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
                         </SimpleGrid>
-                        <TextInput label="E-MAIL" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
-                        <PasswordInput label="SENHA" placeholder="••••••••" leftSection={<IconLock size={16} />} radius="md" styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
-                        <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" style={{ height: rem(48) }}>Cadastrar e Continuar</Button>
+                        <TextInput label="E-MAIL" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" required styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
+                        <PasswordInput label="SENHA" placeholder="••••••••" leftSection={<IconLock size={16} />} radius="md" required styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
+                        <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" type="submit" loading={formLoading} style={{ height: rem(48) }}>Cadastrar e Continuar</Button>
                       </Stack>
                     </form>
                  </Stack>
@@ -240,10 +306,10 @@ export default function Login() {
                       <Text c="dimmed" fw={500}>Enviaremos um link de acesso.</Text>
                     </Box>
 
-                    <form onSubmit={(e) => e.preventDefault()}>
+                    <form onSubmit={handleForgot}>
                       <Stack gap="sm">
-                        <TextInput label="E-MAIL CADASTRADO" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
-                        <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" style={{ height: rem(48) }}>Enviar Instruções</Button>
+                        <TextInput label="E-MAIL CADASTRADO" placeholder="seu@email.com" leftSection={<IconMail size={16} />} radius="md" required value={email} onChange={(e) => setEmail(e.currentTarget.value)} styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }} />
+                        <Button fullWidth size="md" radius="md" color="farol-blue" mt="md" type="submit" loading={formLoading} style={{ height: rem(48) }}>Enviar Instruções</Button>
                       </Stack>
                     </form>
                  </Stack>
