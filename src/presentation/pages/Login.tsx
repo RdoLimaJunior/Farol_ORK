@@ -22,15 +22,16 @@ import {
   IconLock, 
   IconMail, 
   IconBrandGoogle, 
-  IconBuildingSkyscraper, 
+  IconBuildingSkyscraper,
   IconBrandWindows,
-  IconFingerprint,
   IconArrowLeft,
   IconUser,
   IconBuilding,
   IconCheck,
   IconX,
-  IconInfoCircle
+  IconInfoCircle,
+  IconSparkles,
+  IconSend
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../../application/context/AuthContext';
@@ -42,7 +43,7 @@ const WelcomeTexts = [
   "Resultado Real."
 ];
 
-type AuthMode = 'login' | 'register' | 'forgot';
+type AuthMode = 'login' | 'register' | 'forgot' | 'magic';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -62,7 +63,6 @@ export default function Login() {
   useEffect(() => {
     if (isAuthenticated) navigate('/', { replace: true });
 
-    // Show hint for mock credentials
     if (authMode === 'login') {
       notifications.show({
         id: 'login-hint',
@@ -119,15 +119,25 @@ export default function Login() {
         navigate('/');
       }
     } catch (err) {
-      notifications.show({
-        title: 'Erro de Conexão',
-        message: 'Não foi possível contatar o servidor de autenticação.',
-        color: 'red',
-        icon: <IconX size={18} />,
-      });
+      notifications.show({ title: 'Erro de Conexão', message: 'Falha no servidor.', color: 'red', icon: <IconX size={18} /> });
     } finally {
       setFormLoading(false);
     }
+  };
+
+  const handleMagic = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setTimeout(() => {
+      setFormLoading(false);
+      notifications.show({
+        title: 'Link Mágico Enviado!',
+        message: `Verifique sua caixa de entrada em ${email || 'seu e-mail'}.`,
+        color: 'cyan',
+        icon: <IconSparkles size={18} />,
+      });
+      setAuthMode('login');
+    }, 1800);
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -135,12 +145,7 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      notifications.show({
-        title: 'Solicitação Enviada',
-        message: 'Sua conta está em análise comercial.',
-        color: 'green',
-        icon: <IconCheck size={18} />,
-      });
+      notifications.show({ title: 'Solicitação Enviada', message: 'Conta em análise comercial.', color: 'green', icon: <IconCheck size={18} /> });
       setAuthMode('login');
     }, 1500);
   };
@@ -150,12 +155,7 @@ export default function Login() {
     setFormLoading(true);
     setTimeout(() => {
       setFormLoading(false);
-      notifications.show({
-        title: 'E-mail Enviado',
-        message: 'Instruções de recuperação enviadas com sucesso.',
-        color: 'blue',
-        icon: <IconMail size={18} />,
-      });
+      notifications.show({ title: 'E-mail Enviado', message: 'Instruções enviadas com sucesso.', color: 'blue', icon: <IconMail size={18} /> });
       setAuthMode('login');
     }, 1500);
   };
@@ -247,7 +247,10 @@ export default function Login() {
                         radius="md" required value={password} onChange={(e) => setPassword(e.currentTarget.value)}
                         styles={{ label: { fontSize: rem(10), fontWeight: 800, marginBottom: rem(4), color: 'var(--mantine-color-gray-6)' }, input: { height: rem(46), backgroundColor: '#f1f5f9' } }}
                       />
-                      <Checkbox label="Lembrar-me neste dispositivo" size="xs" color="farol-blue" styles={{ label: { fontWeight: 600, color: 'var(--mantine-color-gray-6)' } }} />
+                      <Group justify="space-between">
+                         <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
+                         <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue">Acessar sem senha</Anchor>
+                      </Group>
                       <Button fullWidth size="md" radius="md" color="farol-blue" type="submit" loading={formLoading} style={{ height: rem(48), marginTop: rem(10) }}>Entrar</Button>
                     </Stack>
                   </form>
@@ -266,6 +269,44 @@ export default function Login() {
                     <Anchor component="button" onClick={() => setAuthMode('forgot')} size="xs" fw={700} c="gray.5">Esqueci minha senha</Anchor>
                   </Stack>
                 </Stack>
+              </motion.div>
+            )}
+
+            {authMode === 'magic' && (
+              <motion.div key="magic" variants={containerVariants} initial="initial" animate="animate" exit="exit" transition={{ duration: 0.3 }}>
+                 <Stack gap={rem(25)}>
+                    <Box>
+                      <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
+                        <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
+                      </UnstyledButton>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Link Mágico</Title>
+                      <Text c="dimmed" fw={500}>Acesse sua conta sem precisar de senha.</Text>
+                    </Box>
+
+                    <form onSubmit={handleMagic}>
+                      <Stack gap="md">
+                        <TextInput 
+                          label="E-MAIL CADASTRADO" 
+                          placeholder="seu@email.com" 
+                          leftSection={<IconMail size={16} />} 
+                          radius="md" required 
+                          value={email} 
+                          onChange={(e) => setEmail(e.currentTarget.value)}
+                          styles={{ label: { fontSize: rem(10), fontWeight: 800 }, input: { height: rem(52), backgroundColor: '#f1f5f9' } }} 
+                        />
+                        <Button 
+                          fullWidth size="md" radius="md" color="cyan" mt="md" type="submit" loading={formLoading}
+                          leftSection={<IconSparkles size={18} />}
+                          style={{ height: rem(54) }}
+                        >
+                          Receber meu Link Mágico
+                        </Button>
+                        <Text size="xs" c="dimmed" ta="center" px="xl">
+                           Enviaremos um link de acesso instantâneo para sua caixa de entrada.
+                        </Text>
+                      </Stack>
+                    </form>
+                 </Stack>
               </motion.div>
             )}
 
