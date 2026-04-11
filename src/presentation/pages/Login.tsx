@@ -31,7 +31,8 @@ import {
   IconX,
   IconInfoCircle,
   IconSparkles,
-  IconSend
+  IconSend,
+  IconAlertCircle
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useAuthContext } from '../../application/context/AuthContext';
@@ -138,6 +139,34 @@ export default function Login() {
       });
       setAuthMode('login');
     }, 1800);
+  };
+
+  const handleSso = async (provider: 'google' | 'microsoft') => {
+    notifications.show({
+      title: 'Conectando...',
+      message: `Redirecionando para autenticação com ${provider === 'google' ? 'Google' : 'Microsoft'}...`,
+      color: 'blue',
+      loading: true,
+      autoClose: 2000,
+    });
+
+    if (provider === 'google') {
+      try {
+        await signInWithGoogle();
+      } catch (err) {
+        console.error('SSO error:', err);
+      }
+    } else {
+      // Mock Microsoft for now
+      setTimeout(() => {
+        notifications.show({
+          title: 'Integração em Configuração',
+          message: 'O SSO da Microsoft está sendo validado pelo TI da sua empresa.',
+          color: 'orange',
+          icon: <IconAlertCircle size={18} />,
+        });
+      }, 1000);
+    }
   };
 
   const handleRegister = (e: React.FormEvent) => {
@@ -256,11 +285,11 @@ export default function Login() {
                   </form>
 
                   <Divider label="OU ENTRAR COM" labelPosition="center" styles={{ label: { fontSize: rem(9), fontWeight: 800 } }} />
-
-                  <Group grow gap="xs">
-                    <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={signInWithGoogle} />
-                    <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" />
-                  </Group>
++
+                   <Group grow gap="xs">
+                    <SsoButton icon={IconBrandGoogle} label="Google" color="#EA4335" onClick={() => handleSso('google')} />
+                    <SsoButton icon={IconBrandWindows} label="Microsoft" color="#00A4EF" onClick={() => handleSso('microsoft')} />
+                   </Group>
 
                   <Stack align="center" gap={5} mt="md">
                     <Text size="xs" c="dimmed" fw={600}>
