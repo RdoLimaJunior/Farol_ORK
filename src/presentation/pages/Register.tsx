@@ -69,10 +69,7 @@ export default function Register() {
         />
         <Stack p={rem(60)} justify="center" h="100%" style={{ position: 'relative', zIndex: 10 }}>
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-             <Group gap="xs">
-                <IconFingerprint size={32} color="white" stroke={2.5} />
-                <Title order={2} c="white" style={{ fontSize: rem(32), fontWeight: 900 }}>FAROL</Title>
-             </Group>
+             <Title order={2} c="white" style={{ fontSize: rem(32), fontWeight: 900 }}>FAROL</Title>
              <Title order={1} c="white" mt="xl" style={{ fontSize: rem(48), lineHeight: 1.1 }}>
                 Comece sua jornada <br /> de resultado.
              </Title>

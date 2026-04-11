@@ -129,10 +129,7 @@ export default function Login() {
           }}
         />
         <Stack p={rem(60)} justify="center" h="100%" style={{ position: 'relative', zIndex: 10 }}>
-          <Group gap="xs">
-            <IconFingerprint size={38} color="white" stroke={2.5} />
-            <Title order={1} c="white" style={{ fontSize: rem(48), fontWeight: 900, letterSpacing: rem(-1) }}>FAROL</Title>
-          </Group>
+          <Title order={1} c="white" style={{ fontSize: rem(48), fontWeight: 900, letterSpacing: rem(-1) }}>FAROL</Title>
           <Box mt="lg" style={{ borderLeft: '3px solid var(--mantine-color-cyan-5)', paddingLeft: rem(25) }}>
             <Title order={2} c="white" style={{ fontSize: rem(32), fontWeight: 400 }}>
               {displayText}
@@ -217,28 +214,11 @@ export default function Login() {
                 </UnstyledButton>
               </Stack>
 
-              <Stack gap="md" align="center" mt="md">
-                <Divider w="100%" opacity={0.5} />
-                
-                <Group justify="space-between" w="100%">
-                  <Stack gap={2}>
-                    <Text size="xs" c="dimmed" fw={700} style={{ letterSpacing: rem(0.5) }}>NOVO POR AQUI?</Text>
-                    <Anchor component={Link} to="/register" size="sm" fw={800} c="farol-blue">
-                      Crie sua conta agora
-                    </Anchor>
-                  </Stack>
-
-                  <Button 
-                    component={Link} 
-                    to="/forgot-password" 
-                    variant="subtle" 
-                    color="gray" 
-                    size="compact-xs" 
-                    styles={{ label: { fontSize: rem(11), fontWeight: 700 } }}
-                  >
-                    Esqueci minha senha
-                  </Button>
-                </Group>
+              <Stack align="center" gap={5} mt="md">
+                <Text size="xs" c="dimmed" fw={600}>
+                  Novo por aqui? <Anchor component={Link} to="/register" fw={800} c="farol-blue">Crie sua conta</Anchor>
+                </Text>
+                <Anchor component={Link} to="/forgot-password" size="xs" fw={700} c="gray.5">Esqueci minha senha</Anchor>
               </Stack>
             </Stack>
           </motion.div>
