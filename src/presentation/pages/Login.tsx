@@ -39,7 +39,18 @@ const WelcomePhrases = [
   "Direção Estratégica",
   "Decisões por Dados",
   "Sua Bússola",
-  "Resultado Real"
+  "Resultado Real",
+  "Performance de Elite",
+  "Visão Transparente",
+  "Alinhamento Total",
+  "Foco na Execução",
+  "Inteligência de Resultados",
+  "Estratégia em Tempo Real",
+  "Cultura de Alta Performance",
+  "O Futuro da Gestão",
+  "Transformando Planos em Ação",
+  "Domine seus OKRs",
+  "Liderança Visionária"
 ];
 
 type AuthMode = 'login' | 'register' | 'forgot' | 'magic' | 'otp' | 'sso';
