@@ -319,7 +319,7 @@ export default function Login() {
                       <Group justify="space-between" mt="xs">
                         <Checkbox label="Lembrar-me" size="xs" color="farol-blue" />
                         <Group gap="sm">
-                          <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue" underline="never">Acesso Verificado</Anchor>
+                          <Anchor component="button" type="button" onClick={() => setAuthMode('magic')} size="xs" fw={700} c="farol-blue" underline="never">Login via E-mail</Anchor>
                           <Anchor component="button" type="button" onClick={() => setAuthMode('sso')} size="xs" fw={700} c="farol-blue" underline="never">SSO Corporativo</Anchor>
                         </Group>
                       </Group>
@@ -351,15 +351,15 @@ export default function Login() {
                       <UnstyledButton onClick={() => setAuthMode('login')} style={{ display: 'flex', alignItems: 'center', gap: 5, color: 'var(--mantine-color-dimmed)', marginBottom: 10 }}>
                         <IconArrowLeft size={16} /><Text size="xs" fw={700}>VOLTAR AO LOGIN</Text>
                       </UnstyledButton>
-                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Acesso Verificado</Title>
-                      <Text c="dimmed" fw={500}>Identificação segura via Token de Segurança.</Text>
+                      <Title order={2} fw={900} size={rem(32)} c="dark.7">Login via E-mail</Title>
+                      <Text c="dimmed" fw={500}>Enviaremos um código de acesso para o seu e-mail.</Text>
                     </Box>
 
                     <form onSubmit={handleMagic}>
                       <Stack gap="md">
                         <TextInput 
-                          label="E-MAIL CORPORATIVO" 
-                          placeholder="seu@empresa.com" 
+                          label="E-MAIL" 
+                          placeholder="seu@email.com" 
                           leftSection={<IconMail size={16} />} 
                           radius="md" required 
                           value={email} 
@@ -371,10 +371,10 @@ export default function Login() {
                           leftSection={<IconSend size={18} />}
                           style={{ height: rem(54) }}
                         >
-                          Solicitar Token de Acesso
+                          Receber Código de Acesso
                         </Button>
                         <Text size="xs" c="dimmed" ta="center" px="xl">
-                           Enviaremos um código de 6 dígitos para validar sua identidade.
+                           Enviaremos um código de 6 dígitos para o seu e-mail.
                         </Text>
                       </Stack>
                     </form>
