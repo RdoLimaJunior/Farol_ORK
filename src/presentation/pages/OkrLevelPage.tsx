@@ -20,6 +20,7 @@ import { useObjectives } from '../../application/hooks/useObjectives';
 import { useKRs } from '../../application/hooks/useKRs';
 import { useOkrCalculation } from '../../application/hooks/useOkrCalculation';
 import { DetailedOkrList } from '../components/DetailedOkrList';
+import { TacticalKrList } from '../components/TacticalKrList';
 import type { ObjectiveLevel } from '../../domain/models/types';
 import { PageHeader } from '../components/common/PageHeader';
 
@@ -42,8 +43,12 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
   }, [fetchObjectives, fetchKRs]);
 
   const { enrichedObjectives } = useOkrCalculation(objectives, krs);
-  const filteredObjectives = enrichedObjectives.filter(obj => obj.level === level);
-  const isLoading = loadingObj || loadingKR;
+  const filteredObjectives = level === 'departmental' ? enrichedObjectives : enrichedObjectives.filter(obj => obj.level === level);
+  const isLoading = loadingObj || loadingKR; 
+  
+  // No nível tático (KRs), queremos mostrar TODOS os KRs agrupados por objetivo
+  // mas garantindo que o objetivo tem pelo menos um KR.
+  const objectivesWithKrs = filteredObjectives.filter(o => (o.keyResults || []).length > 0);
 
   const handleQuickCreate = async () => {
     if (!quickValue.trim()) return;
@@ -62,7 +67,7 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
           color={color}
           rightSection={
             <Badge variant="dot" color={color} size="lg" radius="sm">
-               {filteredObjectives.length} Objetivos Ativos
+               {level === 'departmental' ? `${filteredObjectives.flatMap(o => o.keyResults || []).length} KRs Ativos` : `${filteredObjectives.length} Objetivos Ativos`}
             </Badge>
           }
         />
@@ -80,7 +85,7 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
         >
           <Group gap={0}>
             <TextInput 
-              placeholder={`Digite um novo objetivo e pressione Enter...`}
+              placeholder={level === 'departmental' ? "Digite um novo RESULTADO-CHAVE..." : "Digite um novo OBJETIVO..."}
               variant="unstyled"
               size="lg"
               value={quickValue}
@@ -116,11 +121,15 @@ export default function OkrLevelPage({ level, title, icon: Icon, color, descript
                 <Skeleton key={i} height={80} radius="md" />
               ))}
             </Stack>
-          ) : filteredObjectives.length > 0 ? (
-              <DetailedOkrList 
-                objectives={filteredObjectives} 
-                onAddObjective={() => {}} 
-              />
+          ) : objectivesWithKrs.length > 0 ? (
+              level === 'departmental' ? (
+                <TacticalKrList objectives={objectivesWithKrs} />
+              ) : (
+                <DetailedOkrList 
+                  objectives={objectivesWithKrs} 
+                  onAddObjective={() => {}} 
+                />
+              )
           ) : (
             <Paper 
               withBorder 

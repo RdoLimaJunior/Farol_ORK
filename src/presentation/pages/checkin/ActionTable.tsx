@@ -62,7 +62,16 @@ export function ActionTable({ actions, onShowEvidence }: ActionTableProps) {
 
                 <Group gap="xs" wrap="nowrap">
                   <Avatar size="xs" radius="xl" src={`https://i.pravatar.cc/150?u=${action.ownerId}`} />
-                  <Text size="xs" fw={700}>{action.ownerId === 'user-lidia' ? 'Lidia' : 'Luciana'}</Text>
+                  <Text size="xs" fw={700}>
+                    {action.ownerId === 'user-lidia' ? 'Lidia' : 
+                     action.ownerId === 'user-lima' ? 'Lima Junior' : 
+                     action.ownerId === 'user-luciana' ? 'Luciana' :
+                     action.ownerId === 'user-carlos' ? 'Carlos' :
+                     action.ownerId === 'user-ana' ? 'Ana' :
+                     action.ownerId === 'user-roberto' ? 'Roberto' :
+                     action.ownerId === 'user-juliana' ? 'Juliana' :
+                     action.ownerId === 'user-marcos' ? 'Marcos' : 'Responsável'}
+                  </Text>
                 </Group>
 
                 <Stack gap={0}>

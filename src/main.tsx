@@ -22,7 +22,7 @@ console.log('Main.tsx disparado!');
 const rootElement = document.getElementById('root');
 if (rootElement) {
   ReactDOM.createRoot(rootElement).render(
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <MantineProvider theme={theme} defaultColorScheme="auto">
         <ModalsProvider>
           <Notifications />

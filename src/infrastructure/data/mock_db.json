@@ -1,77 +1,174 @@
 {
   "profiles": [
     { "id": "user-lima", "fullName": "Lima Junior", "email": "lima.junior@portfoliotech.com.br", "role": "admin", "jobTitle": "Desenvolvedor Senior", "xpPoints": 1500, "level": 12 },
-    { "id": "user-lidia", "fullName": "Lidia", "email": "lidia@sj.com.br", "role": "member", "jobTitle": "Gestora de Experiência", "xpPoints": 800, "level": 5 }
+    { "id": "user-lidia", "fullName": "Lidia", "email": "lidia@sj.com.br", "role": "member", "jobTitle": "Gestora de Experiência", "xpPoints": 800, "level": 5 },
+    { "id": "user-luciana", "fullName": "Luciana", "email": "luciana@sj.com.br", "role": "admin", "jobTitle": "Diretora de Estratégia", "xpPoints": 1200, "level": 10 },
+    { "id": "user-carlos", "fullName": "Carlos", "email": "carlos@sj.com.br", "role": "member", "jobTitle": "CFO", "xpPoints": 900, "level": 8 },
+    { "id": "user-ana", "fullName": "Ana", "email": "ana@sj.com.br", "role": "member", "jobTitle": "Head de Marketing", "xpPoints": 750, "level": 6 },
+    { "id": "user-roberto", "fullName": "Roberto", "email": "roberto@sj.com.br", "role": "member", "jobTitle": "Diretor de Gente e Gestão", "xpPoints": 600, "level": 4 },
+    { "id": "user-juliana", "fullName": "Juliana", "email": "juliana@sj.com.br", "role": "member", "jobTitle": "Diretora Comercial", "xpPoints": 1100, "level": 9 },
+    { "id": "user-marcos", "fullName": "Marcos", "email": "marcos@sj.com.br", "role": "member", "jobTitle": "Head de Produto", "xpPoints": 950, "level": 7 }
   ],
   "objectives": [
     { 
+      "id": "O1", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "title": "O1 - Liderança de Mercado em Soluções de Moradia Digital", 
+      "ownerId": "user-lima", 
+      "progress": 45, 
+      "status": "on_track", 
+      "level": "organizational", 
+      "description": "Dominar o ecossistema de moradia digital no Brasil até o final do ano.",
+      "adhesionPercentage": 98,
+      "climateStatus": "green",
+      "maturityLevel": "OURO"
+    },
+    { 
       "id": "O2", 
-      "title": "O2 - Desenvolver os processos de moradia e negócios com foco na experiência do Cliente", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "title": "O2 - Desenvolver processos de moradia com foco na experiência do Cliente", 
       "ownerId": "user-lidia", 
       "progress": 32, 
-      "status": "at_risk" 
+      "status": "at_risk", 
+      "level": "organizational", 
+      "description": "Focar na jornada de moradia SJ, otimizando captação e relacionamento.",
+      "adhesionPercentage": 92,
+      "climateStatus": "green",
+      "maturityLevel": "PRATA"
     },
     { 
       "id": "O3", 
-      "title": "O3 - Escalar a Eficiência Financeira e Expansão de Mercado (Receita Recurrente)", 
-      "ownerId": "user-lima", 
-      "progress": 82, 
-      "status": "on_track" 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "title": "O3 - Escalar a Eficiência Financeira e Rentabilidade do Portfólio", 
+      "ownerId": "user-carlos", 
+      "progress": 15, 
+      "status": "off_track", 
+      "level": "organizational", 
+      "description": "Reduzir custos operacionais e maximizar o retorno sobre investimentos imobiliários.",
+      "adhesionPercentage": 85,
+      "climateStatus": "yellow",
+      "maturityLevel": "BRONZE"
+    },
+    { 
+      "id": "O4", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "title": "O4 - Consolidar uma Cultura de Performance e Orgulho de Pertencer", 
+      "ownerId": "user-roberto", 
+      "progress": 60, 
+      "status": "on_track", 
+      "level": "organizational", 
+      "description": "Transformar a SJ no melhor lugar para talentos de tecnologia e mercado imobiliário.",
+      "adhesionPercentage": 100,
+      "climateStatus": "green",
+      "maturityLevel": "OURO"
+    },
+    { 
+      "id": "O5", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "title": "O5 - Expansão Nacional e Diversificação de Receita", 
+      "ownerId": "user-juliana", 
+      "progress": 28, 
+      "status": "at_risk", 
+      "level": "organizational", 
+      "description": "Atingir 15 capitais com novos serviços de valor agregado.",
+      "adhesionPercentage": 88,
+      "climateStatus": "green",
+      "maturityLevel": "PRATA"
+    },
+    { 
+      "id": "O6", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "parentObjectiveId": "O1", 
+      "title": "O6 - Implementar Automação de Marketing para Escalar Aquisição", 
+      "ownerId": "user-ana", 
+      "progress": 15, 
+      "status": "on_track", 
+      "level": "departmental", 
+      "description": "Focar em ferramentas de RD Station e IA para nutrir leads.",
+      "adhesionPercentage": 95,
+      "climateStatus": "green",
+      "maturityLevel": "PRATA"
+    },
+    { 
+      "id": "O7", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "parentObjectiveId": "O4", 
+      "title": "O7 - Modernizar o Processo de Recrutamento e Seleção", 
+      "ownerId": "user-roberto", 
+      "progress": 40, 
+      "status": "on_track", 
+      "level": "departmental", 
+      "description": "Reduzir o tempo médio de contratação para cargos técnicos.",
+      "adhesionPercentage": 98,
+      "climateStatus": "green",
+      "maturityLevel": "PRATA"
+    },
+    { 
+      "id": "O8", 
+      "tenantId": "00000000-0000-0000-0000-000000000001", 
+      "parentObjectiveId": "O3", 
+      "title": "O8 - Eficiência Técnica e Cloud Optimization", 
+      "ownerId": "user-marcos", 
+      "progress": 20, 
+      "status": "at_risk", 
+      "level": "departmental", 
+      "description": "Reduzir desperdício em instâncias AWS e bancos de dados.",
+      "adhesionPercentage": 82,
+      "climateStatus": "yellow",
+      "maturityLevel": "BRONZE"
     }
   ],
   "krs": [
-    { 
-      "id": "KR1-O3", 
-      "objectiveId": "O3", 
-      "title": "Atingir marco de Receita Recurrente (MRR) projetado", 
-      "ownerId": "user-lima",
-      "ownerName": "Lima Junior", 
-      "startValue": 50000,
-      "targetValue": 100000,
-      "currentValue": 92000, 
-      "progress": 84, 
-      "status": "on_track" 
-    },
-    { 
-      "id": "KR1-O2", 
-      "objectiveId": "O2", 
-      "title": "Estruturar plano de atuação da diretoria de relacionamentos até 31/03/2026", 
-      "ownerId": "user-lidia",
-      "ownerName": "Lidia", 
-      "startValue": 0,
-      "targetValue": 100,
-      "currentValue": 25, 
-      "progress": 25, 
-      "status": "at_risk" 
-    },
-    { 
-      "id": "KR2-O2", 
-      "objectiveId": "O2", 
-      "title": "Alcançar CSAT de 90% na jornada de captação", 
-      "ownerId": "user-lidia",
-      "ownerName": "Lidia", 
-      "startValue": 75,
-      "targetValue": 90,
-      "currentValue": 82, 
-      "progress": 46, 
-      "status": "on_track" 
-    }
+    { "id": "KR1-O1", "objectiveId": "O1", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Atingir 1 milhão de usuários ativos na plataforma", "ownerId": "user-marcos", "ownerName": "Marcos", "startValue": 250000, "targetValue": 1000000, "currentValue": 450000, "progress": 27, "status": "at_risk", "confidence": "media", "unit": "number", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O1", "objectiveId": "O1", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir o churn de locatários de 15% para 8%", "ownerId": "user-ana", "ownerName": "Ana", "startValue": 15, "targetValue": 8, "currentValue": 12, "progress": 42, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "descending" },
+    { "id": "KR3-O1", "objectiveId": "O1", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Aumentar Taxa de Conversão no App para 35%", "ownerId": "user-marcos", "ownerName": "Marcos", "startValue": 18, "targetValue": 35, "currentValue": 22, "progress": 23, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    
+    { "id": "KR1-O2", "objectiveId": "O2", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Estruturar plano de atuação da diretoria até 31/03", "ownerId": "user-lidia", "ownerName": "Lidia", "startValue": 0, "targetValue": 100, "currentValue": 25, "progress": 25, "status": "at_risk", "confidence": "baixa", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O2", "objectiveId": "O2", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Alcançar CSAT de 90%", "ownerId": "user-lidia", "ownerName": "Lidia", "startValue": 75, "targetValue": 90, "currentValue": 82, "progress": 82, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR3-O2", "objectiveId": "O2", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir tempo de vistorias em 40%", "ownerId": "user-lidia", "ownerName": "Lidia", "startValue": 0, "targetValue": 40, "currentValue": 15, "progress": 37, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+
+    { "id": "KR1-O3", "objectiveId": "O3", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir OPEX em 20%", "ownerId": "user-carlos", "ownerName": "Carlos", "startValue": 0, "targetValue": 20, "currentValue": 5, "progress": 25, "status": "off_track", "confidence": "baixa", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O3", "objectiveId": "O3", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Aumentar Margem EBITDA para 25%", "ownerId": "user-carlos", "ownerName": "Carlos", "startValue": 18, "targetValue": 25, "currentValue": 19, "progress": 14, "status": "off_track", "confidence": "baixa", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR3-O3", "objectiveId": "O3", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir Inadimplência para < 3%", "ownerId": "user-carlos", "ownerName": "Carlos", "startValue": 5.2, "targetValue": 3, "currentValue": 4.8, "progress": 18, "status": "at_risk", "confidence": "media", "unit": "percentage", "weight": 1, "polarity": "descending" },
+
+    { "id": "KR1-O4", "objectiveId": "O4", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Atingir e-NPS de 75", "ownerId": "user-roberto", "ownerName": "Roberto", "startValue": 50, "targetValue": 75, "currentValue": 70, "progress": 80, "status": "on_track", "confidence": "alta", "unit": "number", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O4", "objectiveId": "O4", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Implementar PDI em 100% dos cargos chave", "ownerId": "user-roberto", "ownerName": "Roberto", "startValue": 0, "targetValue": 100, "currentValue": 60, "progress": 60, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+
+    { "id": "KR1-O5", "objectiveId": "O5", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Operar em 5 novas capitais", "ownerId": "user-juliana", "ownerName": "Juliana", "startValue": 0, "targetValue": 5, "currentValue": 1, "progress": 20, "status": "at_risk", "confidence": "media", "unit": "number", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O5", "objectiveId": "O5", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Lançar serviço de 'SJ Concierge'", "ownerId": "user-luciana", "ownerName": "Luciana", "startValue": 0, "targetValue": 100, "currentValue": 45, "progress": 45, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR3-O5", "objectiveId": "O5", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Alcançar 50M em novos contratos", "ownerId": "user-juliana", "ownerName": "Juliana", "startValue": 0, "targetValue": 50, "currentValue": 12, "progress": 24, "status": "at_risk", "confidence": "media", "unit": "currency", "weight": 1, "polarity": "ascending" },
+
+    { "id": "KR1-O6", "objectiveId": "O6", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Implementar 10 fluxos de automação ativos", "ownerId": "user-ana", "ownerName": "Ana", "startValue": 0, "targetValue": 10, "currentValue": 2, "progress": 20, "status": "on_track", "confidence": "alta", "unit": "number", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O6", "objectiveId": "O6", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Aumentar Taxa de Nutrição de Leads para 60%", "ownerId": "user-ana", "ownerName": "Ana", "startValue": 35, "targetValue": 60, "currentValue": 42, "progress": 28, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR3-O6", "objectiveId": "O6", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir Custo por Lead (CPL) em 30%", "ownerId": "user-ana", "ownerName": "Ana", "startValue": 0, "targetValue": 30, "currentValue": 10, "progress": 33, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+
+    { "id": "KR1-O7", "objectiveId": "O7", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir Time-to-Hire de 45 para 25 dias", "ownerId": "user-roberto", "ownerName": "Roberto", "startValue": 45, "targetValue": 25, "currentValue": 38, "progress": 35, "status": "on_track", "confidence": "alta", "unit": "number", "weight": 1, "polarity": "descending" },
+    { "id": "KR2-O7", "objectiveId": "O7", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Digitalizar 100% dos processos de onboarding", "ownerId": "user-roberto", "ownerName": "Roberto", "startValue": 0, "targetValue": 100, "currentValue": 90, "progress": 90, "status": "on_track", "confidence": "alta", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+
+    { "id": "KR1-O8", "objectiveId": "O8", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Reduzir fatura AWS em 15%", "ownerId": "user-marcos", "ownerName": "Marcos", "startValue": 0, "targetValue": 15, "currentValue": 3, "progress": 20, "status": "at_risk", "confidence": "media", "unit": "percentage", "weight": 1, "polarity": "ascending" },
+    { "id": "KR2-O8", "objectiveId": "O8", "tenantId": "00000000-0000-0000-0000-000000000001", "title": "Manter Uptime de 99.99%", "ownerId": "user-marcos", "ownerName": "Marcos", "startValue": 99.9, "targetValue": 99.99, "currentValue": 99.95, "progress": 55, "status": "on_track", "confidence": "alta", "unit": "number", "weight": 1, "polarity": "ascending" }
   ],
   "fcas": [
-    { 
-      "id": "FCA-KR1", 
-      "keyResultId": "KR1-O2", 
-      "fato": "Atraso no cronograma de estruturação do plano devido à dependência da consultoria externa.", 
-      "causa": "O processo de aprovação do contrato no departamento jurídico levou 15 dias a mais que o previsto.", 
-      "acao": "Agendar reunião com o Diretor Jurídico para priorizar contratos de estratégia e criar um checklist de pré-requisitos." 
-    }
+    { "id": "FCA-KR1-O2", "keyResultId": "KR1-O2", "tenantId": "00000000-0000-0000-0000-000000000001", "fato": "Atraso no cronograma devido ao Jurídico.", "causa": "Sobrecarga de contratos sazonais e falta de priorização.", "ownerId": "user-lidia" },
+    { "id": "FCA-KR1-O3", "keyResultId": "KR1-O3", "tenantId": "00000000-0000-0000-0000-000000000001", "fato": "Corte de gastos abaixo da meta mensal.", "causa": "Contratos legados sem cláusula de rescisão facilitada.", "ownerId": "user-carlos" },
+    { "id": "FCA-KR3-O3", "keyResultId": "KR3-O3", "tenantId": "00000000-0000-0000-0000-000000000001", "fato": "Inadimplência subiu 0.5% no último mês.", "causa": "Falha no disparo automático de avisos de vencimento.", "ownerId": "user-carlos" }
   ],
   "initiatives": [
-    { "id": "P1-KR1", "keyResultId": "KR1-O2", "ownerId": "user-lidia", "title": "Mapeamento da Jornada do Cliente SJ", "progress": 45, "status": "in_progress" },
-    { "id": "P2-KR2", "keyResultId": "KR2-O2", "ownerId": "user-lidia", "title": "Implantação do Sistema de Feedback Real-Time", "progress": 85, "status": "in_progress" }
+    { "id": "P1-KR1-O1", "keyResultId": "KR1-O1", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-marcos", "title": "Nova Campanha de Growth Hacking", "progress": 30, "status": "in_progress" },
+    { "id": "P2-KR1-O1", "keyResultId": "KR1-O1", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-marcos", "title": "Programa de Indicação 'Indique um Amigo'", "progress": 50, "status": "in_progress" },
+    { "id": "P3-KR1-O1", "keyResultId": "KR1-O1", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-ana", "title": "SEO e Marketing de Conteúdo", "progress": 15, "status": "in_progress" },
+    { "id": "P4-KR1-O1", "keyResultId": "KR1-O1", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-juliana", "title": "Parceria com Imobiliárias Regionais", "progress": 40, "status": "in_progress" },
+    { "id": "P1-KR1-O2", "keyResultId": "KR1-O2", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-lidia", "title": "Mapeamento da Jornada do Cliente SJ", "progress": 45, "status": "in_progress" },
+    { "id": "P2-KR1-O2", "keyResultId": "KR1-O2", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-lidia", "title": "Redesenho dos Processos de Atendimento", "progress": 20, "status": "in_progress" },
+    { "id": "P1-KR2-O2", "keyResultId": "KR2-O2", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-marcos", "title": "Implantação do Sistema de Feedback Real-Time", "progress": 85, "status": "in_progress" }
   ],
   "actions": [
-    { "id": "A1", "parentId": "P1-KR1", "title": "Entrevistas qualitativas", "status": "done" },
-    { "id": "A2", "parentId": "P2-KR2", "title": "Configuração da API", "status": "doing" }
+    { "id": "A1-P1", "parentId": "P1-KR1-O1", "parentType": "initiative", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-ana", "title": "Definir personas da campanha", "status": "done", "plannedDate": "01/02", "evidenceUrls": ["https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2340&auto=format&fit=crop"], "documents": [{ "name": "mapping_personas_v1.pdf", "size": "1.2 MB", "type": "pdf" }] },
+    { "id": "A2-P1", "parentId": "P1-KR1-O1", "parentType": "initiative", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-ana", "title": "Criar criativos para tráfego pago", "status": "done", "plannedDate": "05/02" },
+    { "id": "A1-FCA1", "parentId": "FCA-KR1-O2", "parentType": "fca", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-lidia", "title": "Reunião de alinhamento com Gestor Jurídico", "status": "done", "plannedDate": "12/03", "completionDate": "14/03" },
+    { "id": "A2-FCA1", "parentId": "FCA-KR1-O2", "parentType": "fca", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-lidia", "title": "Criar checklist de pré-requisitos contratuais", "status": "doing", "plannedDate": "15/03" },
+    { "id": "A1-FCA2", "parentId": "FCA-KR1-O3", "parentType": "fca", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-carlos", "title": "Negociação agressiva com fornecedores Cloud", "status": "doing", "plannedDate": "10/03" },
+    { "id": "A1-FCA3", "parentId": "FCA-KR3-O3", "parentType": "fca", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-carlos", "title": "Correção de script de notificações", "status": "done", "plannedDate": "05/03" },
+    { "id": "A2-FCA3", "parentId": "FCA-KR3-O3", "parentType": "fca", "tenantId": "00000000-0000-0000-0000-000000000001", "ownerId": "user-ana", "title": "Campanha de recuperação de inadimplentes", "status": "todo", "plannedDate": "20/03" }
   ]
 }

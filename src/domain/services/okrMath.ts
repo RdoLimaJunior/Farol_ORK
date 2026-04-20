@@ -15,7 +15,7 @@ export const calculateKRProgress = (kr: Pick<KeyResult, 'startValue' | 'targetVa
     progress = ((currentValue - startValue) / (targetValue - startValue)) * 100;
   }
   
-  return Math.min(Math.max(progress, 0), 100); // Clamp between 0 and 100
+  return Math.round(Math.min(Math.max(progress, 0), 100)); // Clamp 0-100 and round to integer
 };
 
 /**
@@ -77,5 +77,5 @@ export const calculateObjectiveProgress = (
   const totalWeight = allPoints.reduce((acc, curr) => acc + curr.weight, 0);
   const weightedSum = allPoints.reduce((acc, curr) => acc + (curr.value * curr.weight), 0);
 
-  return weightedSum / totalWeight;
+  return Math.round(weightedSum / totalWeight);
 };

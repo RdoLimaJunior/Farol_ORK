@@ -7,8 +7,16 @@ export const getMockData = () => {
     const stored = localStorage.getItem(STORAGE_KEY);
     const parsed = stored ? JSON.parse(stored) : null;
     
-    // Se não tiver startValue no primeiro KR, limpamos tudo para atualizar para a versão nova
-    const needsReset = parsed && parsed.krs && parsed.krs.length > 0 && parsed.krs[0].startValue === undefined;
+    // Forçamos reset se não houver dados ou se a estrutura estiver incompleta (ex: falta o campo 'level')
+    // Baseamos o reset no ID do primeiro objetivo, na presença do campo 'level' e na quantidade de objetivos (mínimo 8 para incluir táticos)
+    const needsReset = parsed && (
+        !parsed.objectives || 
+        parsed.objectives.length < 8 || 
+        !parsed.krs ||
+        parsed.krs.length < 21 ||
+        parsed.objectives[0].id !== "O1" ||
+        !parsed.objectives[0].level
+    );
 
     if (!stored || needsReset) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(mockDb));

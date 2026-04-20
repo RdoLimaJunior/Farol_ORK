@@ -25,6 +25,7 @@ import { IconTrophy, IconTournament, IconUserCircle } from '@tabler/icons-react'
 import { CopilotProvider } from './application/context/CopilotContext';
 import CeremonyHub from './presentation/pages/CeremonyHub';
 import CheckinFlow from './presentation/pages/CheckinFlow';
+import OperationalHub from './presentation/pages/OperationalHub';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           }>
             <Route path="/" element={<Home />} />
             <Route path="/overview" element={<Overview />} />
+            <Route path="/operation-hub" element={<OperationalHub />} />
             <Route path="/objective/:id" element={<OkrDetails />} />
             <Route path="/strategy" element={
               <OkrLevelPage 
@@ -62,15 +64,7 @@ function App() {
               />
             } />
 
-            <Route path="/individual" element={
-              <OkrLevelPage 
-                level="individual" 
-                title="Meus OKRs" 
-                icon={IconUserCircle} 
-                color="farol-blue" 
-                description="Contribuições individuais e metas táticas." 
-              />
-            } />
+
             <Route path="/execution" element={<ActionPlans />} />
             <Route path="/execution-overview" element={<Execution />} />
             <Route path="/checkins" element={<Checkins />} />

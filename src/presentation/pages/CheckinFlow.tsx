@@ -1,8 +1,8 @@
-import { 
+import {
   Container,
-  Stack, 
-  Group, 
-  Button, 
+  Stack,
+  Group,
+  Button,
   Box,
   rem,
   Text,
@@ -10,7 +10,7 @@ import {
   Menu,
   UnstyledButton
 } from '@mantine/core';
-import { 
+import {
   IconCheck,
   IconTarget,
   IconChevronDown,
@@ -25,23 +25,26 @@ import { useDisclosure, useFullscreen } from '@mantine/hooks';
 // IMPORTAÇÃO DOS NOVOS COMPONENTES MODULARES
 import { ObjectiveSection } from './checkin/ObjectiveSection';
 import { EvidenceDrawer } from './checkin/EvidenceDrawer';
+import { CeremonyDashboard } from './checkin/CeremonyDashboard';
 
 import { useObjectives } from '../../application/hooks/useObjectives';
 import { useKRs } from '../../application/hooks/useKRs';
 import { useActions } from '../../application/hooks/useActions';
+import { useOkrCalculation } from '../../application/hooks/useOkrCalculation';
 import { PageHeader } from '../components/common/PageHeader';
 
 export default function CheckinFlow() {
   const { objectives, fetchObjectives } = useObjectives();
   const { krs, fetchKRs } = useKRs();
   const { actions, initiatives, fetchCeremonyData } = useActions();
-  
+  const { enrichedObjectives } = useOkrCalculation(objectives, krs);
+
   const [openedArtifacts, { open, close }] = useDisclosure(false);
   const { toggle, fullscreen, ref } = useFullscreen();
   const [selectedAction, setSelectedAction] = useState<any>(null);
   const [selectedMonth, setSelectedMonth] = useState('FEVEREIRO / 2026');
 
-  
+
   const months = [
     'JANEIRO / 2026',
     'FEVEREIRO / 2026',
@@ -50,7 +53,7 @@ export default function CheckinFlow() {
     'MAIO / 2026',
     'JUNHO / 2026'
   ];
-  
+
   useEffect(() => {
     fetchObjectives();
     fetchKRs();
@@ -77,18 +80,18 @@ export default function CheckinFlow() {
   if (!objectives.length) return null;
 
   return (
-    <Container 
-      size="fluid" 
-      py={rem(20)} 
-      ref={ref} 
+    <Container
+      size="fluid"
+      py={rem(20)}
+      ref={ref}
       className={fullscreen ? 'presentation-container' : ''}
-      style={{ 
+      style={{
         backgroundColor: fullscreen ? 'light-dark(white, var(--mantine-color-dark-8))' : 'transparent',
       }}
     >
       <Stack gap={rem(40)}>
 
-        <PageHeader 
+        <PageHeader
           title="Ritual de"
           highlightedText="Check-in Executivo"
           description="Acompanhamento tático, gestão de evidências e memória institucional."
@@ -96,9 +99,9 @@ export default function CheckinFlow() {
           color="blue"
           rightSection={
             <Group gap="md" align="flex-end">
-              <Button 
-                variant="light" 
-                color="blue" 
+              <Button
+                variant="light"
+                color="blue"
                 leftSection={fullscreen ? <IconMinimize size={18} /> : <IconMaximize size={18} />}
                 onClick={toggle}
                 radius="md"
@@ -111,19 +114,16 @@ export default function CheckinFlow() {
               <Stack gap={rem(4)} align="flex-end">
                 <Text size="xs" fw={900} c="dimmed" tt="uppercase" style={{ letterSpacing: rem(1) }}>Período de Referência</Text>
 
-              
+
               <Menu shadow="xl" width={220} position="bottom-end" transitionProps={{ transition: 'pop-top-right' }} radius="md">
                 <Menu.Target>
-                  <UnstyledButton 
+                  <UnstyledButton
                     style={{
                       padding: `${rem(8)} ${rem(20)}`,
                       borderRadius: '8px',
                       backgroundColor: 'light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))',
                       border: '1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4))',
                       transition: 'all 0.2s ease',
-                      '&:hover': {
-                        backgroundColor: 'light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))',
-                      }
                     }}
                   >
                     <Group gap="md">
@@ -137,10 +137,10 @@ export default function CheckinFlow() {
                 <Menu.Dropdown p={8}>
                   <Menu.Label>Ciclo de Gestão 2026</Menu.Label>
                   {months.map(m => (
-                    <Menu.Item 
-                      key={m} 
+                    <Menu.Item
+                      key={m}
                       onClick={() => setSelectedMonth(m)}
-                      style={{ 
+                      style={{
                         fontWeight: selectedMonth === m ? 800 : 500,
                         backgroundColor: selectedMonth === m ? 'var(--mantine-color-blue-0)' : 'transparent',
                         color: selectedMonth === m ? 'var(--mantine-color-blue-9)' : 'inherit'
@@ -156,12 +156,19 @@ export default function CheckinFlow() {
           }
         />
 
+        {/* SAÚDE GERAL DA OPERAÇÃO */}
+        <CeremonyDashboard
+          enrichedObjectives={enrichedObjectives}
+          actions={actions}
+          initiatives={initiatives}
+        />
+
         {/* LISTA DE OBJETIVOS (ORQUESTRAÇÃO) */}
         <Box>
           {objectives.map((obj) => (
-            <ObjectiveSection 
-              key={obj.id} 
-              obj={obj} 
+            <ObjectiveSection
+              key={obj.id}
+              obj={obj}
               krs={getKRsForObjective(obj.id)}
               initiatives={initiatives.filter(i => getKRsForObjective(obj.id).some(k => k.id === i.keyResultId))}
               getActionsForInitiative={getActionsForInitiative}
@@ -181,12 +188,12 @@ export default function CheckinFlow() {
               <Text size="xs" fw={900} c="dimmed" tt="uppercase" style={{ letterSpacing: rem(1) }}>Finalização do Encontro</Text>
               <Text size="sm" fw={600} c="gray.6">Clique para salvar as notas e artefatos deste check-in estratégico.</Text>
             </Stack>
-            <Button 
+            <Button
               variant="filled"
-              size="md" 
-              radius="md" 
-              color="dark.6" 
-              px={30} 
+              size="md"
+              radius="md"
+              color="dark.6"
+              px={30}
               leftSection={<IconCheck size={18} />}
               style={{ boxShadow: '0 4px 10px rgba(0,0,0,0.1)' }}
             >
@@ -197,10 +204,10 @@ export default function CheckinFlow() {
       </Stack>
 
       {/* PAINEL LATERAL DE EVIDÊNCIAS */}
-      <EvidenceDrawer 
-        opened={openedArtifacts} 
-        onClose={close} 
-        selectedAction={selectedAction} 
+      <EvidenceDrawer
+        opened={openedArtifacts}
+        onClose={close}
+        selectedAction={selectedAction}
       />
     </Container>
   );

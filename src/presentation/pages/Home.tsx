@@ -1,5 +1,5 @@
 import { ActiveDashboardHero } from '../components/Home/ActiveDashboardHero';
-import { AgentInsightsFeed } from '../components/Home/AgentInsightsFeed';
+import { OperationHealth } from '../components/Home/OperationHealth';
 import { TimoneiroFooter } from '../components/Timoneiro/TimoneiroFooter';
 import { rem, Box, Stack } from '@mantine/core';
 
@@ -11,8 +11,8 @@ export default function Home() {
           {/* TOP: MISSION & WELCOME */}
           <ActiveDashboardHero />
 
-          {/* DYNAMIC RADAR: AGENT FEED */}
-          <AgentInsightsFeed />
+          {/* SAÚDE GERAL DA OPERAÇÃO */}
+          <OperationHealth />
         </Stack>
       </Box>
 

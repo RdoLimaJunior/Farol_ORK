@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { Objective, KeyResult } from '../../domain/models/types';
 import { calculateKRProgress, calculateObjectiveProgress } from '../../domain/services/okrMath';
+import { calculateAdhesion, calculateClimate, calculateMaturity } from '../../domain/services/governanceLogic';
 
 export function useOkrCalculation(objectives: Objective[], krs: KeyResult[]) {
   
@@ -12,17 +13,24 @@ export function useOkrCalculation(objectives: Objective[], krs: KeyResult[]) {
     }));
   }, [krs]);
 
-  // 2. Calculate Objective Progress and Status
+  // 2. Calculate Objective Progress and Governance Metrics
   const enrichedObjectives = useMemo(() => {
     return objectives.map(obj => {
       const objKRs = enrichedKRs.filter(kr => kr.objectiveId === obj.id);
       
       const progress = calculateObjectiveProgress(objKRs);
       
+      // Cálculos Dinâmicos de Governança (Metodologia 5.3)
+      const adhesionPercentage = calculateAdhesion(objKRs);
+      const climateStatus = calculateClimate(objKRs);
+      const maturityLevel = calculateMaturity(obj, objKRs, adhesionPercentage, climateStatus);
+      
       return {
         ...obj,
         progress,
-        status: obj.status, // Keep original or suggest based on progress
+        adhesionPercentage,
+        climateStatus,
+        maturityLevel,
         keyResults: objKRs
       };
     });

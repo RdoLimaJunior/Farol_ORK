@@ -54,8 +54,8 @@ export function AppLayout() {
       links: [
         { icon: IconCompass, label: 'Timoneiro', path: '/' },
         { icon: IconChartBar, label: 'Visão Geral', path: '/overview' },
+        { icon: IconActivity, label: 'Painel de Controle', path: '/operation-hub' },
         { icon: IconCalendarEvent, label: 'Ritual de Check-in Executivo', path: '/ceremony' },
-        { icon: IconUserCircle, label: 'Meus OKRs', path: '/individual' },
       ]
     },
     {
@@ -189,10 +189,10 @@ export function AppLayout() {
                   Perfil e Atividades
                 </Menu.Item>
                 <Menu.Item 
-                  leftSection={<IconSparkles size={16} color="orange" />}
-                  onClick={() => navigate('/')}
+                  leftSection={<IconTrophy size={16} color="blue" />}
+                  onClick={() => navigate('/strategy')}
                 >
-                  Minhas Metas
+                  Objetivos Estratégicos
                 </Menu.Item>
                 
                 <Menu.Divider />

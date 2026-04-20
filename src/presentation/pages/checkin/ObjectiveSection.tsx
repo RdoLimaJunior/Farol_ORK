@@ -49,6 +49,7 @@ export function ObjectiveSection({
   const [opened, setOpened] = useState(true);
   const [isStuck, setIsStuck] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // CÁLCULOS DINÂMICOS PARA O RESUMO
   const allActions = initiatives.flatMap(i => getActionsForInitiative(i.id));
@@ -103,27 +104,18 @@ export function ObjectiveSection({
 
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (!headerRef.current) return;
-      const rect = headerRef.current.getBoundingClientRect();
-      
-      // O Objetivo só encolhe quando "atracar" (physically dock) no seu trilho
-      // No modo apresentação, compensamos o padding-top do container
-      const threshold = isPresentation ? 50 : 61;
-      if (rect.top <= threshold) {
-        setIsStuck(true);
-      } else {
-        setIsStuck(false);
-      }
-    };
-
-
-
-
-    // Usamos capture: true para detectar scroll em containers internos (comum no modo fullscreen)
-    document.addEventListener('scroll', handleScroll, true);
-    handleScroll();
-    return () => document.removeEventListener('scroll', handleScroll, true);
+    if (!sentinelRef.current) return;
+    // IntersectionObserver é assíncrono e roda fora do ciclo de layout —
+    // não sofre feedback loop com reflows causados pela mudança de altura do sticky.
+    // rootMargin negativo no topo = detecta quando o sentinel sai da faixa visível
+    // abaixo do AppShell header (70px) ou do topo em modo apresentação.
+    const topMargin = isPresentation ? '0px' : '-70px';
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsStuck(!entry.isIntersecting),
+      { rootMargin: `${topMargin} 0px 0px 0px`, threshold: 0 }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
   }, [isPresentation]);
 
 
@@ -141,8 +133,12 @@ export function ObjectiveSection({
 
   return (
     <Box mb={rem(100)}>
+      {/* Sentinela: div de altura zero em fluxo normal. O scroll handler lê a posição
+          deste elemento (não do sticky) para evitar o loop de oscilação. */}
+      <div ref={sentinelRef} style={{ height: 0 }} />
+
       {/* NÍVEL 1: HEADER DO OBJETIVO (PLATINUM SMART STICKY) */}
-      <Box 
+      <Box
         ref={headerRef}
         style={{ 
           position: 'sticky', 

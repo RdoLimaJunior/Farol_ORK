@@ -107,13 +107,13 @@ export function DetailedOkrList({ objectives }: DetailedOkrListProps) {
                       <Tooltip label="Adesão aos Ritos (Cadência)">
                         <Stack gap={0} align="center">
                           <Text size="9px" fw={800} c="dimmed">ADESÃO</Text>
-                          <Badge variant="light" color="blue" size="xs">98%</Badge>
+                          <Badge variant="light" color="blue" size="xs">{obj.adhesionPercentage || 100}%</Badge>
                         </Stack>
                       </Tooltip>
                       <Tooltip label="Saúde do Time (Clima e-NPS)">
                         <Stack gap={0} align="center">
                           <Text size="9px" fw={800} c="dimmed">CLIMA</Text>
-                          <ThemeIcon variant="transparent" color="green" size="sm">
+                          <ThemeIcon variant="transparent" color={obj.climateStatus || 'success'} size="sm">
                              <IconActivity size={14} />
                           </ThemeIcon>
                         </Stack>
@@ -126,8 +126,8 @@ export function DetailedOkrList({ objectives }: DetailedOkrListProps) {
                     <Group gap={4} visibleFrom="sm" align="center">
                        <Stack gap={0}>
                          <Group gap={4} wrap="nowrap">
-                            <IconTrophy size={14} color="var(--mantine-color-yellow-6)" />
-                            <Text size="xs" fw={800}>OURO</Text>
+                            <IconTrophy size={14} color={obj.maturityLevel === 'OURO' ? 'var(--mantine-color-yellow-6)' : (obj.maturityLevel === 'PRATA' ? 'var(--mantine-color-gray-5)' : 'var(--mantine-color-error-7)')} />
+                            <Text size="xs" fw={800}>{obj.maturityLevel || 'BRONZE'}</Text>
                          </Group>
                          <Text size="9px" c="dimmed" fw={800} style={{ letterSpacing: 0.5 }}>MATURIDADE</Text>
                        </Stack>
